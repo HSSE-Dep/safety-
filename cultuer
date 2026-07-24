@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قواعد الحفاظ على الحياة</title>
+<style>
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; text-align: center; }
+  .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-top: 50px; }
+  h1 { color: #2c3e50; }
+  input { width: 80%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; font-family: inherit;}
+  button { background-color: #2980b9; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 15px 5px; font-family: inherit;}
+  button:hover { background-color: #1a5276; }
+  .hidden { display: none; }
+  .question-box { margin: 20px 0; text-align: right; }
+  .option { display: block; background: #ecf0f1; padding: 15px; margin: 10px 0; border-radius: 5px; cursor: pointer; border: 1px solid #bdc3c7; text-align: right; font-size: 16px;}
+  .option:hover { background: #d5dbdb; }
+  #timer { font-size: 24px; font-weight: bold; color: #e74c3c; direction: ltr;}
+  .footer { margin-top: 30px; font-size: 12px; color: #7f8c8d; }
+</style>
+</head>
+<body>
+
+<div class="container" id="login-page">
+  <h1>⚠️ قواعد الحفاظ على الحياة</h1>
+  <p>سجّل بياناتك للبدء في الاختبار</p>
+  <input type="text" id="userName" placeholder="الاسم الرباعي" required>
+  <input type="number" id="userId" placeholder="الرقم الوظيفي" required>
+  <button onclick="startApp()">تسجيل الدخول</button>
+</div>
+
+<div class="container hidden" id="home-page">
+  <h1>أهلاً بك، <span id="displayName" style="color:#2980b9;"></span></h1>
+  <p>هل أنت مستعد لاختبار معلوماتك في قواعد السلامة؟</p>
+  <button onclick="startQuiz()">⚡ ابدأ الاختبار الآن</button>
+</div>
+
+<div class="container hidden" id="quiz-page">
+  <div id="timer">⏱️ 30</div>
+  <h2 id="questionText" style="color: #2c3e50; text-align: right;"></h2>
+  <div id="optionsList"></div>
+</div>
+
+<div class="container hidden" id="result-page">
+  <h1>🏁 النتيجة النهائية</h1>
+  <h3 style="color: #34495e;">الاسم: <span id="resName"></span></h3>
+  <h3 style="color: #34495e;">الرقم الوظيفي: <span id="resId"></span></h3>
+  <h2 style="color: #27ae60;">الإجابات الصحيحة: <span id="score"></span> من <span id="totalQ"></span></h2>
+  <button onclick="location.reload()">إعادة الاختبار 🔄</button>
+</div>
+<div class="footer">© تم تطوير الاختبار بواسطة قسم السلامة</div>
+
+<script>
+  // يمكنك تعديل الأسئلة هنا بكل سهولة!
+  const questions = [
+    { q: "متى يُسمح لك بالبدء في عمل يتطلب تصريح عمل؟", options: ["أ) عندما يخبرني المشرف شفهياً بالبدء.", "ب) عندما أحصل على تصريح عمل معتمد وصالح.", "ج) عندما أكون متأكداً شخصياً من أن المكان آمن."], answer: 1 },
+    { q: "ما هو الإجراء الأهم عند العمل في مكان مرتفع؟", options: ["أ) الاعتماد على زميل لمراقبتي.", "ب) استخدام معدات الحماية من السقوط وربطها طوال الوقت.", "ج) العمل بسرعة لتقليل وقت الخطر."], answer: 1 },
+    { q: "قبل البدء في صيانة أي معدة، ما هو الإجراء الصحيح؟", options: ["أ) إيقاف تشغيل المعدة من الزر الرئيسي.", "ب) إخبار المشغل بإيقاف المعدة.", "ج) عزل الطاقة وتأمينها بالقفل (Lockout/Tagout)."], answer: 2 },
+    { q: "هل يُسمح لك بتجاوز أو تعطيل نظام أمان (مثل حساس الحريق)؟", options: ["أ) نعم، مؤقتاً وبحذر شديد.", "ب) نعم، بموافقة المشرف الشفهية.", "ج) لا، إلا بتصريح تجاوز خاص ومعتمد."], answer: 2 }
+  ];
+
+  let currentQ = 0, score = 0, timeLeft = 30, timer;
+
+  function startApp() {
+    let name = document.getElementById('userName').value;
+    let id = document.getElementById('userId').value;
+    if(name === '' || id === '') { alert("الرجاء إدخال الاسم والرقم الوظيفي!"); return; }
+    document.getElementById('login-page').classList.add('hidden');
+    document.getElementById('home-page').classList.remove('hidden');
+    document.getElementById('displayName').innerText = name;
+  }
+
+  function startQuiz() {
+    document.getElementById('home-page').classList.add('hidden');
+    document.getElementById('quiz-page').classList.remove('hidden');
+    loadQuestion();
+    timer = setInterval(updateTimer, 1000);
+  }
+
+  function loadQuestion() {
+    if (currentQ >= questions.length) { showResult(); return; }
+    document.getElementById('questionText').innerText = questions[currentQ].q;
+    let opts = document.getElementById('optionsList');
+    opts.innerHTML = '';
+    questions[currentQ].options.forEach((opt, index) => {
+      let div = document.createElement('div');
+      div.className = 'option';
+      div.innerText = opt;
+      div.onclick = () => checkAnswer(index);
+      opts.appendChild(div);
+    });
+    timeLeft = 30; // مدة السؤال 30 ثانية
+  }
+
+  function updateTimer() {
+    timeLeft--;
+    document.getElementById('timer').innerText = "⏱️ " + timeLeft;
+    if (timeLeft <= 0) {
+      currentQ++;
+      loadQuestion();
+    }
+  }
+
+  function checkAnswer(index) {
+    if (index === questions[currentQ].answer) score++;
+    currentQ++;
+    loadQuestion();
+  }
+
+  function showResult() {
+    clearInterval(timer);
+    document.getElementById('quiz-page').classList.add('hidden');
+    document.getElementById('result-page').classList.remove('hidden');
+    document.getElementById('resName').innerText = document.getElementById('userName').value;
+    document.getElementById('resId').innerText = document.getElementById('userId').value;
+    document.getElementById('score').innerText = score;
+    document.getElementById('totalQ').innerText = questions.length;
+  }
+</script>
+</body>
+</html>
