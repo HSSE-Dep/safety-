@@ -3,75 +3,209 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>قواعد الحفاظ على الحياة</title>
+<title>بوابة السلامة - قواعد الحفاظ على الحياة</title>
 <style>
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; text-align: center; }
-  .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-top: 50px; }
-  h1 { color: #2c3e50; }
-  input { width: 80%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; font-family: inherit;}
-  button { background-color: #2980b9; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 15px 5px; font-family: inherit;}
-  button:hover { background-color: #1a5276; }
-  .hidden { display: none; }
+  :root {
+    --primary-color: #1a5276; /* أزرق داكن احترافي */
+    --secondary-color: #27ae60; /* أخضر للسلامة */
+    --bg-color: #f0f3f4;
+    --card-bg: #ffffff;
+  }
+  body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background-color: var(--bg-color); 
+    margin: 0; 
+    padding: 20px; 
+    text-align: center; 
+  }
+  .container { 
+    max-width: 650px; 
+    margin: auto; 
+    background: var(--card-bg); 
+    padding: 40px 30px; 
+    border-radius: 12px; 
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
+    margin-top: 40px; 
+    border-top: 5px solid var(--primary-color);
+  }
+  .logo { width: 100px; margin-bottom: 15px; }
+  h1 { color: var(--primary-color); font-size: 28px; margin-bottom: 5px;}
+  h2 { color: #34495e; font-size: 20px;}
+  p.subtitle { color: #7f8c8d; margin-bottom: 30px; }
+  
+  .user-type-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  .user-type-container label { font-weight: bold; cursor: pointer; color: var(--primary-color);}
+  
+  input[type="text"], input[type="number"] { 
+    width: 85%; 
+    padding: 14px; 
+    margin: 10px 0; 
+    border: 1.5px solid #bdc3c7; 
+    border-radius: 8px; 
+    font-size: 16px; 
+    font-family: inherit;
+    transition: 0.3s;
+  }
+  input[type="text"]:focus, input[type="number"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+  }
+  
+  button { 
+    background-color: var(--primary-color); 
+    color: white; 
+    border: none; 
+    padding: 14px 24px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-size: 18px; 
+    font-weight: bold;
+    margin-top: 20px; 
+    width: 90%;
+    font-family: inherit;
+    transition: 0.3s;
+  }
+  button:hover { background-color: #123851; transform: scale(1.02); }
+  
+  .hidden { display: none !important; }
+  
   .question-box { margin: 20px 0; text-align: right; }
-  .option { display: block; background: #ecf0f1; padding: 15px; margin: 10px 0; border-radius: 5px; cursor: pointer; border: 1px solid #bdc3c7; text-align: right; font-size: 16px;}
-  .option:hover { background: #d5dbdb; }
-  #timer { font-size: 24px; font-weight: bold; color: #e74c3c; direction: ltr;}
-  .footer { margin-top: 30px; font-size: 12px; color: #7f8c8d; }
+  .option { 
+    display: block; 
+    background: #f8f9f9; 
+    padding: 18px; 
+    margin: 12px 0; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    border: 2px solid #e5e8e8; 
+    text-align: right; 
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.2s;
+  }
+  .option:hover { background: #eaeded; border-color: var(--primary-color); }
+  
+  #timer { font-size: 28px; font-weight: bold; color: #e74c3c; direction: ltr; background: #fdf2e9; padding: 10px; border-radius: 8px; display: inline-block;}
+  .footer { margin-top: 40px; font-size: 13px; color: #95a5a6; }
 </style>
 </head>
 <body>
 
+<!-- شاشة تسجيل الدخول -->
 <div class="container" id="login-page">
-  <h1>⚠️ قواعد الحفاظ على الحياة</h1>
-  <p>سجّل بياناتك للبدء في الاختبار</p>
+  <!-- صورة الشعار (يمكنك استبدال الرابط برابط شعار شركتك لاحقاً) -->
+  <img src="https://cdn-icons-png.flaticon.com/512/2622/2622834.png" alt="Safety Logo" class="logo">
+  <h1>قواعد الحفاظ على الحياة</h1>
+  <p class="subtitle">بوابة التقييم واختبار السلامة المهنية</p>
+  
   <input type="text" id="userName" placeholder="الاسم الرباعي" required>
-  <input type="number" id="userId" placeholder="الرقم الوظيفي" required>
-  <button onclick="startApp()">تسجيل الدخول</button>
+  
+  <div class="user-type-container">
+    <div>
+      <input type="radio" id="emp" name="userType" value="employee" checked onchange="toggleFields()">
+      <label for="emp">🏢 موظف شركة</label>
+    </div>
+    <div>
+      <input type="radio" id="cont" name="userType" value="contractor" onchange="toggleFields()">
+      <label for="cont">👷 مقاول</label>
+    </div>
+  </div>
+
+  <input type="number" id="companyId" placeholder="الرقم الوظيفي (5 أرقام كحد أدنى)" required>
+  <input type="number" id="nationalId" class="hidden" placeholder="رقم الهوية / الإقامة (10 أرقام)" required>
+  
+  <button onclick="startApp()">تسجيل الدخول وبدء الاختبار</button>
 </div>
 
-<div class="container hidden" id="home-page">
-  <h1>أهلاً بك، <span id="displayName" style="color:#2980b9;"></span></h1>
-  <p>هل أنت مستعد لاختبار معلوماتك في قواعد السلامة؟</p>
-  <button onclick="startQuiz()">⚡ ابدأ الاختبار الآن</button>
-</div>
-
+<!-- شاشة الاختبار -->
 <div class="container hidden" id="quiz-page">
   <div id="timer">⏱️ 30</div>
-  <h2 id="questionText" style="color: #2c3e50; text-align: right;"></h2>
+  <h2 id="questionText" style="text-align: right; margin-top: 25px; line-height: 1.5;"></h2>
   <div id="optionsList"></div>
 </div>
 
+<!-- شاشة النتيجة -->
 <div class="container hidden" id="result-page">
-  <h1>🏁 النتيجة النهائية</h1>
-  <h3 style="color: #34495e;">الاسم: <span id="resName"></span></h3>
-  <h3 style="color: #34495e;">الرقم الوظيفي: <span id="resId"></span></h3>
-  <h2 style="color: #27ae60;">الإجابات الصحيحة: <span id="score"></span> من <span id="totalQ"></span></h2>
+  <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Success" class="logo" style="width: 120px;">
+  <h1>🏁 اكتمل الاختبار</h1>
+  <h3 style="color: #34495e;">الاسم: <span id="resName" style="color: var(--primary-color);"></span></h3>
+  <h3 style="color: #34495e;">التصنيف: <span id="resType" style="color: var(--primary-color);"></span></h3>
+  <h3 style="color: #34495e;">الرقم: <span id="resId" style="color: var(--primary-color);"></span></h3>
+  <br>
+  <h2 style="color: var(--secondary-color); font-size: 26px;">النتيجة: <span id="score"></span> / <span id="totalQ"></span></h2>
   <button onclick="location.reload()">إعادة الاختبار 🔄</button>
 </div>
-<div class="footer">© تم تطوير الاختبار بواسطة قسم السلامة</div>
+
+<div class="footer">© تم تطوير المنصة بواسطة قسم السلامة المهنية (HSE)</div>
 
 <script>
-  // يمكنك تعديل الأسئلة هنا بكل سهولة!
+  // قائمة الأسئلة المطورة
   const questions = [
-    { q: "متى يُسمح لك بالبدء في عمل يتطلب تصريح عمل؟", options: ["أ) عندما يخبرني المشرف شفهياً بالبدء.", "ب) عندما أحصل على تصريح عمل معتمد وصالح.", "ج) عندما أكون متأكداً شخصياً من أن المكان آمن."], answer: 1 },
-    { q: "ما هو الإجراء الأهم عند العمل في مكان مرتفع؟", options: ["أ) الاعتماد على زميل لمراقبتي.", "ب) استخدام معدات الحماية من السقوط وربطها طوال الوقت.", "ج) العمل بسرعة لتقليل وقت الخطر."], answer: 1 },
-    { q: "قبل البدء في صيانة أي معدة، ما هو الإجراء الصحيح؟", options: ["أ) إيقاف تشغيل المعدة من الزر الرئيسي.", "ب) إخبار المشغل بإيقاف المعدة.", "ج) عزل الطاقة وتأمينها بالقفل (Lockout/Tagout)."], answer: 2 },
-    { q: "هل يُسمح لك بتجاوز أو تعطيل نظام أمان (مثل حساس الحريق)؟", options: ["أ) نعم، مؤقتاً وبحذر شديد.", "ب) نعم، بموافقة المشرف الشفهية.", "ج) لا، إلا بتصريح تجاوز خاص ومعتمد."], answer: 2 }
+    { q: "1. متى يُسمح لك بالبدء في عمل يتطلب تصريح عمل (Work Permit)؟", options: ["عندما يخبرني المشرف شفهياً بالبدء.", "عندما أحصل على تصريح عمل معتمد وصالح وأفهم محتواه.", "عندما أكون متأكداً شخصياً من أن المكان آمن."], answer: 1 },
+    { q: "2. ما هو الإجراء الأهم عند العمل في مكان مرتفع يحتاج إلى حماية من السقوط؟", options: ["الاعتماد على زميل لمراقبتي وتنبيهي.", "العمل بسرعة لتقليل وقت التواجد في المرتفعات.", "فحص واستخدام معدات الحماية من السقوط (Harness) وربطها طوال فترة العمل."], answer: 2 },
+    { q: "3. قبل البدء في صيانة أو إصلاح أي معدة، ما هو الإجراء الصحيح للتعامل مع مصادر الطاقة؟", options: ["عزل الطاقة وتأمينها بالقفل واللوحة التحذيرية (LOTO) واختبار خلوها.", "إيقاف تشغيل المعدة من الزر الرئيسي فقط والبدء بالعمل.", "إخبار المشغل بإيقاف المعدة والوقوف بجانبها للحراسة."], answer: 0 },
+    { q: "4. هل يُسمح لك بالدخول إلى مكان مغلق لإنقاذ زميل فاقد للوعي دون تصريح أو معدات مخصصة؟", options: ["نعم، في حالات الطوارئ القصوى فقط لإنقاذ حياته.", "لا، يجب الحصول على تصريح واختبار الغازات وتوفر مراقب (Hole Watch).", "نعم، إذا كان المكان مضاءً جيداً ودرجة الحرارة معتدلة."], answer: 1 },
+    { q: "5. ماذا تفعل إذا احتجت إلى تجاوز نظام أمان (مثل حساس الحريق) لإنجاز عمل صيانة؟", options: ["لا أقوم بتجاوز أي نظام أمان إلا بتصريح تجاوز خاص ومعتمد.", "أقوم بتعطيله مؤقتاً بحذر وأعيده فور الانتهاء.", "أطلب من المشرف الموافقة الشفهية لإيقافه وأبدأ العمل."], answer: 0 },
+    { q: "6. أي من السلوكيات التالية تعتبر مخالفة جسيمة لقواعد القيادة الآمنة؟", options: ["فحص المركبة والإطارات قبل بدء الرحلة.", "ربط حزام الأمان للسائق ولجميع الركاب.", "استخدام الهاتف المحمول أثناء القيادة أو تجاوز السرعة المحددة."], answer: 2 },
+    { q: "7. ما المقصود بالقاعدة التحذيرية: ابق خارج خط النار (Line of Fire)؟", options: ["تجنب العمل في الأماكن ذات درجات الحرارة العالية.", "إبقاء الجسم بعيداً عن مسار الأشياء المتحركة أو المتساقطة أو مصادر الطاقة.", "عدم استخدام المواد القابلة للاشتعال بالقرب من الحرارة."], answer: 1 },
+    { q: "8. قبل البدء في أعمال اللحام أو القطع (العمل الساخن)، يجب التأكد بشكل أساسي من:", options: ["إبعاد المواد القابلة للاشتعال وتوفر طفاية حريق ومراقب حريق.", "ارتداء النظارة الشمسية فقط والعمل في منطقة خارجية.", "إنجاز العمل في أسرع وقت لتقليل احتمالية حدوث شرر."], answer: 0 },
+    { q: "9. من يملك الصلاحية لإيقاف أي عمل يعتبره غير آمن (Stop Work Authority)؟", options: ["مدير الموقع أو المهندس المسؤول فقط.", "مسؤول السلامة والصحة المهنية (HSE) فقط.", "جميع الموظفين والعمال والمقاولين لديهم الحق المطلق لإيقاف العمل."], answer: 2 },
+    { q: "10. ما هو الإجراء الصحيح عند اكتشاف تسرب لمادة كيميائية غير معروفة؟", options: ["الابتعاد عن المكان فوراً، تحذير الآخرين، وإبلاغ الطوارئ.", "محاولة تنظيف التسرب باستخدام الماء والصابون.", "تغطية التسرب بالرمال ومواصلة العمل."], answer: 0 }
   ];
 
   let currentQ = 0, score = 0, timeLeft = 30, timer;
+  let finalIdValue = "", userRoleText = "";
 
-  function startApp() {
-    let name = document.getElementById('userName').value;
-    let id = document.getElementById('userId').value;
-    if(name === '' || id === '') { alert("الرجاء إدخال الاسم والرقم الوظيفي!"); return; }
-    document.getElementById('login-page').classList.add('hidden');
-    document.getElementById('home-page').classList.remove('hidden');
-    document.getElementById('displayName').innerText = name;
+  // دالة تبديل الحقول بناءً على نوع المستخدم
+  function toggleFields() {
+    let isEmp = document.getElementById('emp').checked;
+    if (isEmp) {
+      document.getElementById('companyId').classList.remove('hidden');
+      document.getElementById('nationalId').classList.add('hidden');
+    } else {
+      document.getElementById('companyId').classList.add('hidden');
+      document.getElementById('nationalId').classList.remove('hidden');
+    }
   }
 
-  function startQuiz() {
-    document.getElementById('home-page').classList.add('hidden');
+  // دالة التحقق وبدء التطبيق
+  function startApp() {
+    let name = document.getElementById('userName').value;
+    let isEmp = document.getElementById('emp').checked;
+    let compId = document.getElementById('companyId').value;
+    let natId = document.getElementById('nationalId').value;
+
+    if (name.trim() === '') {
+      alert("⚠️ الرجاء إدخال الاسم الرباعي");
+      return;
+    }
+
+    if (isEmp) {
+      if (compId.length < 5) {
+        alert("⚠️ خطأ: الرقم الوظيفي لموظف الشركة يجب أن يتكون من 5 أرقام على الأقل.");
+        return;
+      }
+      finalIdValue = compId;
+      userRoleText = "موظف شركة";
+    } else {
+      if (natId.length !== 10) {
+        alert("⚠️ خطأ: رقم الهوية أو الإقامة للمقاول يجب أن يتكون من 10 أرقام بالضبط.");
+        return;
+      }
+      finalIdValue = natId;
+      userRoleText = "مقاول";
+    }
+
+    // إذا كانت البيانات صحيحة، نبدأ الاختبار
+    document.getElementById('login-page').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
     loadQuestion();
     timer = setInterval(updateTimer, 1000);
@@ -89,7 +223,7 @@
       div.onclick = () => checkAnswer(index);
       opts.appendChild(div);
     });
-    timeLeft = 30; // مدة السؤال 30 ثانية
+    timeLeft = 30; 
   }
 
   function updateTimer() {
@@ -111,8 +245,10 @@
     clearInterval(timer);
     document.getElementById('quiz-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
+    
     document.getElementById('resName').innerText = document.getElementById('userName').value;
-    document.getElementById('resId').innerText = document.getElementById('userId').value;
+    document.getElementById('resType').innerText = userRoleText;
+    document.getElementById('resId').innerText = finalIdValue;
     document.getElementById('score').innerText = score;
     document.getElementById('totalQ').innerText = questions.length;
   }
