@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>بوابة السلامة - السعودية للطاقة</title>
+<title>قياس ثقافة السلامة - السعودية للطاقة</title>
 <style>
   :root {
     --primary-color: #0066ff; /* أزرق السعودية للطاقة */
@@ -28,7 +28,7 @@
     margin-top: 40px; 
     border-top: 5px solid var(--primary-color);
   }
-  .logo { width: 220px; margin-bottom: 15px; }
+  .logo { width: 220px; margin-bottom: 15px; } /* حجم متناسق مع الشعار */
   h1 { color: var(--primary-color); font-size: 28px; margin-bottom: 5px;}
   h2 { color: #34495e; font-size: 20px;}
   p.subtitle { color: #7f8c8d; margin-bottom: 30px; }
@@ -93,22 +93,19 @@
     transition: 0.2s;
   }
   .option:hover { background: #eaeded; border-color: var(--primary-color); }
-  
-  #timer { font-size: 28px; font-weight: bold; color: #e74c3c; direction: ltr; background: #fdf2e9; padding: 10px; border-radius: 8px; display: inline-block;}
   .footer { margin-top: 40px; font-size: 13px; color: #95a5a6; }
 </style>
 </head>
 <body>
 
 <div class="container" id="login-page">
-  <!-- سيتم عرض الشعار هنا بمجرد رفعه -->
-  <img src="logo.png" alt="السعودية للطاقة" class="logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2622/2622834.png'; this.style.width='100px';">
+  <!-- هنا سيظهر الشعار بمجرد رفعه -->
+  <img src="logo.png" alt="شعار السعودية للطاقة" class="logo">
   
   <h1>قواعد الحفاظ على الحياة</h1>
-  <p class="subtitle">بوابة التقييم واختبار السلامة المهنية</p>
+  <p class="subtitle">بوابة قياس ثقافة السلامة المهنية</p>
   
-  <input type="text" id="userName" placeholder="الاسم الرباعي" required>
-  
+  <!-- الخيارات في الأعلى -->
   <div class="user-type-container">
     <div>
       <input type="radio" id="emp" name="userType" value="employee" checked onchange="toggleFields()">
@@ -131,23 +128,26 @@
   <input type="number" id="companyId" placeholder="الرقم الوظيفي" required>
   <input type="number" id="nationalId" class="hidden" placeholder="رقم الهوية / الإقامة" required>
   
+  <!-- الاسم في الأسفل -->
+  <input type="text" id="userName" placeholder="الاسم الرباعي" required>
+  
   <button onclick="startApp()">ابدأ</button>
 </div>
 
+<!-- صفحة الأسئلة بدون مؤقت -->
 <div class="container hidden" id="quiz-page">
-  <div id="timer">⏱️ 30</div>
   <h2 id="questionText" style="text-align: right; margin-top: 25px; line-height: 1.5;"></h2>
   <div id="optionsList"></div>
 </div>
 
 <div class="container hidden" id="result-page">
-  <h1 style="color: var(--secondary-color);">🏁 اكتمل الاختبار</h1>
+  <h1 style="color: var(--secondary-color);">🏁 اكتمل قياس ثقافة السلامة</h1>
   <h3 style="color: #34495e;">الاسم: <span id="resName" style="color: var(--primary-color);"></span></h3>
   <h3 style="color: #34495e;">التصنيف: <span id="resType" style="color: var(--primary-color);"></span></h3>
   <h3 style="color: #34495e;">الرقم: <span id="resId" style="color: var(--primary-color);"></span></h3>
   <br>
   <h2 style="color: var(--secondary-color); font-size: 26px;">النتيجة: <span id="score"></span> / <span id="totalQ"></span></h2>
-  <button onclick="location.reload()">إعادة الاختبار 🔄</button>
+  <button onclick="location.reload()">إعادة القياس 🔄</button>
 </div>
 
 <div class="footer">© تم تطوير المنصة بواسطة قسم السلامة المهنية (HSE)</div>
@@ -166,7 +166,7 @@
     { q: "10. ما هو الإجراء الصحيح عند اكتشاف تسرب لمادة كيميائية غير معروفة؟", options: ["الابتعاد عن المكان فوراً، تحذير الآخرين، وإبلاغ الطوارئ.", "محاولة تنظيف التسرب باستخدام الماء والصابون.", "تغطية التسرب بالرمال ومواصلة العمل."], answer: 0 }
   ];
 
-  let currentQ = 0, score = 0, timeLeft = 30, timer;
+  let currentQ = 0, score = 0;
   let finalIdValue = "", userRoleText = "";
 
   function toggleFields() {
@@ -189,35 +189,22 @@
     let natId = document.getElementById('nationalId').value;
     let empRole = document.getElementById('empRole').value;
 
-    if (name.trim() === '') {
-      alert("⚠️ الرجاء إدخال الاسم الرباعي");
-      return;
-    }
-
     if (isEmp) {
-      if (empRole === '') {
-        alert("⚠️ الرجاء اختيار المسمى الوظيفي");
-        return;
-      }
-      if (compId.trim() === '') {
-        alert("⚠️ الرجاء إدخال الرقم الوظيفي");
-        return;
-      }
+      if (empRole === '') { alert("⚠️ الرجاء اختيار المسمى الوظيفي"); return; }
+      if (compId.trim() === '') { alert("⚠️ الرجاء إدخال الرقم الوظيفي"); return; }
       finalIdValue = compId;
       userRoleText = "موظف شركة - " + empRole;
     } else {
-      if (natId.trim() === '') {
-        alert("⚠️ الرجاء إدخال رقم الهوية / الإقامة");
-        return;
-      }
+      if (natId.trim() === '') { alert("⚠️ الرجاء إدخال رقم الهوية / الإقامة"); return; }
       finalIdValue = natId;
       userRoleText = "مقاول";
     }
 
+    if (name.trim() === '') { alert("⚠️ الرجاء إدخال الاسم الرباعي"); return; }
+
     document.getElementById('login-page').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
     loadQuestion();
-    timer = setInterval(updateTimer, 1000);
   }
 
   function loadQuestion() {
@@ -232,16 +219,6 @@
       div.onclick = () => checkAnswer(index);
       opts.appendChild(div);
     });
-    timeLeft = 30; 
-  }
-
-  function updateTimer() {
-    timeLeft--;
-    document.getElementById('timer').innerText = "⏱️ " + timeLeft;
-    if (timeLeft <= 0) {
-      currentQ++;
-      loadQuestion();
-    }
   }
 
   function checkAnswer(index) {
@@ -251,7 +228,6 @@
   }
 
   function showResult() {
-    clearInterval(timer);
     document.getElementById('quiz-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
     
