@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>بوابة السلامة - قواعد الحفاظ على الحياة</title>
+<title>بوابة السلامة - السعودية للطاقة</title>
 <style>
   :root {
-    --primary-color: #1a5276; /* أزرق داكن احترافي */
-    --secondary-color: #27ae60; /* أخضر للسلامة */
-    --bg-color: #f0f3f4;
+    --primary-color: #0066ff; /* أزرق السعودية للطاقة */
+    --secondary-color: #00cc99; /* أخضر/سماوي السعودية للطاقة */
+    --bg-color: #f4f7f6;
     --card-bg: #ffffff;
   }
   body { 
@@ -28,7 +28,7 @@
     margin-top: 40px; 
     border-top: 5px solid var(--primary-color);
   }
-  .logo { width: 100px; margin-bottom: 15px; }
+  .logo { width: 220px; margin-bottom: 15px; }
   h1 { color: var(--primary-color); font-size: 28px; margin-bottom: 5px;}
   h2 { color: #34495e; font-size: 20px;}
   p.subtitle { color: #7f8c8d; margin-bottom: 30px; }
@@ -44,7 +44,7 @@
   }
   .user-type-container label { font-weight: bold; cursor: pointer; color: var(--primary-color);}
   
-  input[type="text"], input[type="number"] { 
+  input[type="text"], input[type="number"], select { 
     width: 85%; 
     padding: 14px; 
     margin: 10px 0; 
@@ -53,8 +53,9 @@
     font-size: 16px; 
     font-family: inherit;
     transition: 0.3s;
+    box-sizing: border-box;
   }
-  input[type="text"]:focus, input[type="number"]:focus {
+  input[type="text"]:focus, input[type="number"]:focus, select:focus {
     border-color: var(--primary-color);
     outline: none;
   }
@@ -69,11 +70,11 @@
     font-size: 18px; 
     font-weight: bold;
     margin-top: 20px; 
-    width: 90%;
+    width: 85%;
     font-family: inherit;
     transition: 0.3s;
   }
-  button:hover { background-color: #123851; transform: scale(1.02); }
+  button:hover { background-color: #004ecc; transform: scale(1.02); }
   
   .hidden { display: none !important; }
   
@@ -99,10 +100,10 @@
 </head>
 <body>
 
-<!-- شاشة تسجيل الدخول -->
 <div class="container" id="login-page">
-  <!-- صورة الشعار (يمكنك استبدال الرابط برابط شعار شركتك لاحقاً) -->
-  <img src="https://cdn-icons-png.flaticon.com/512/2622/2622834.png" alt="Safety Logo" class="logo">
+  <!-- سيتم عرض الشعار هنا بمجرد رفعه -->
+  <img src="logo.png" alt="السعودية للطاقة" class="logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2622/2622834.png'; this.style.width='100px';">
+  
   <h1>قواعد الحفاظ على الحياة</h1>
   <p class="subtitle">بوابة التقييم واختبار السلامة المهنية</p>
   
@@ -119,23 +120,28 @@
     </div>
   </div>
 
-  <input type="number" id="companyId" placeholder="الرقم الوظيفي (5 أرقام كحد أدنى)" required>
-  <input type="number" id="nationalId" class="hidden" placeholder="رقم الهوية / الإقامة (10 أرقام)" required>
+  <select id="empRole">
+    <option value="" disabled selected>اختر المسمى الوظيفي</option>
+    <option value="مدير">مدير</option>
+    <option value="رئيس قسم">رئيس قسم</option>
+    <option value="موظف ميداني">موظف ميداني</option>
+    <option value="موظف اداري">موظف إداري</option>
+  </select>
+
+  <input type="number" id="companyId" placeholder="الرقم الوظيفي" required>
+  <input type="number" id="nationalId" class="hidden" placeholder="رقم الهوية / الإقامة" required>
   
-  <button onclick="startApp()">تسجيل الدخول وبدء الاختبار</button>
+  <button onclick="startApp()">ابدأ</button>
 </div>
 
-<!-- شاشة الاختبار -->
 <div class="container hidden" id="quiz-page">
   <div id="timer">⏱️ 30</div>
   <h2 id="questionText" style="text-align: right; margin-top: 25px; line-height: 1.5;"></h2>
   <div id="optionsList"></div>
 </div>
 
-<!-- شاشة النتيجة -->
 <div class="container hidden" id="result-page">
-  <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Success" class="logo" style="width: 120px;">
-  <h1>🏁 اكتمل الاختبار</h1>
+  <h1 style="color: var(--secondary-color);">🏁 اكتمل الاختبار</h1>
   <h3 style="color: #34495e;">الاسم: <span id="resName" style="color: var(--primary-color);"></span></h3>
   <h3 style="color: #34495e;">التصنيف: <span id="resType" style="color: var(--primary-color);"></span></h3>
   <h3 style="color: #34495e;">الرقم: <span id="resId" style="color: var(--primary-color);"></span></h3>
@@ -147,7 +153,6 @@
 <div class="footer">© تم تطوير المنصة بواسطة قسم السلامة المهنية (HSE)</div>
 
 <script>
-  // قائمة الأسئلة المطورة
   const questions = [
     { q: "1. متى يُسمح لك بالبدء في عمل يتطلب تصريح عمل (Work Permit)؟", options: ["عندما يخبرني المشرف شفهياً بالبدء.", "عندما أحصل على تصريح عمل معتمد وصالح وأفهم محتواه.", "عندما أكون متأكداً شخصياً من أن المكان آمن."], answer: 1 },
     { q: "2. ما هو الإجراء الأهم عند العمل في مكان مرتفع يحتاج إلى حماية من السقوط؟", options: ["الاعتماد على زميل لمراقبتي وتنبيهي.", "العمل بسرعة لتقليل وقت التواجد في المرتفعات.", "فحص واستخدام معدات الحماية من السقوط (Harness) وربطها طوال فترة العمل."], answer: 2 },
@@ -164,24 +169,25 @@
   let currentQ = 0, score = 0, timeLeft = 30, timer;
   let finalIdValue = "", userRoleText = "";
 
-  // دالة تبديل الحقول بناءً على نوع المستخدم
   function toggleFields() {
     let isEmp = document.getElementById('emp').checked;
     if (isEmp) {
       document.getElementById('companyId').classList.remove('hidden');
+      document.getElementById('empRole').classList.remove('hidden');
       document.getElementById('nationalId').classList.add('hidden');
     } else {
       document.getElementById('companyId').classList.add('hidden');
+      document.getElementById('empRole').classList.add('hidden');
       document.getElementById('nationalId').classList.remove('hidden');
     }
   }
 
-  // دالة التحقق وبدء التطبيق
   function startApp() {
     let name = document.getElementById('userName').value;
     let isEmp = document.getElementById('emp').checked;
     let compId = document.getElementById('companyId').value;
     let natId = document.getElementById('nationalId').value;
+    let empRole = document.getElementById('empRole').value;
 
     if (name.trim() === '') {
       alert("⚠️ الرجاء إدخال الاسم الرباعي");
@@ -189,22 +195,25 @@
     }
 
     if (isEmp) {
-      if (compId.length < 5) {
-        alert("⚠️ خطأ: الرقم الوظيفي لموظف الشركة يجب أن يتكون من 5 أرقام على الأقل.");
+      if (empRole === '') {
+        alert("⚠️ الرجاء اختيار المسمى الوظيفي");
+        return;
+      }
+      if (compId.trim() === '') {
+        alert("⚠️ الرجاء إدخال الرقم الوظيفي");
         return;
       }
       finalIdValue = compId;
-      userRoleText = "موظف شركة";
+      userRoleText = "موظف شركة - " + empRole;
     } else {
-      if (natId.length !== 10) {
-        alert("⚠️ خطأ: رقم الهوية أو الإقامة للمقاول يجب أن يتكون من 10 أرقام بالضبط.");
+      if (natId.trim() === '') {
+        alert("⚠️ الرجاء إدخال رقم الهوية / الإقامة");
         return;
       }
       finalIdValue = natId;
       userRoleText = "مقاول";
     }
 
-    // إذا كانت البيانات صحيحة، نبدأ الاختبار
     document.getElementById('login-page').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
     loadQuestion();
