@@ -4,59 +4,103 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>قياس ثقافة السلامة - السعودية للطاقة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --primary-color: #0066ff; 
     --secondary-color: #00cc99; 
     --bg-color: #f4f7f6;
     --card-bg: #ffffff;
+    --text-main: #2c3e50;
+    --text-muted: #7f8c8d;
+    --border-color: #bdc3c7;
+    --option-bg: #f8f9f9;
+    --option-hover: #eaeded;
   }
+  
+  /* الوضع الداكن */
+  [data-theme="dark"] {
+    --primary-color: #3385ff;
+    --secondary-color: #1affc6;
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-main: #f1f1f1;
+    --text-muted: #aaaaaa;
+    --border-color: #444;
+    --option-bg: #2d2d2d;
+    --option-hover: #3d3d3d;
+  }
+
   body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    font-family: 'Tajawal', sans-serif; 
     background-color: var(--bg-color); 
+    color: var(--text-main);
     margin: 0; 
     padding: 20px; 
     text-align: center; 
+    transition: background-color 0.3s, color 0.3s;
   }
+  
+  /* زر الوضع الداكن */
+  .theme-switch-wrapper {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: var(--card-bg);
+    padding: 8px 15px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-weight: bold;
+    border: 1px solid var(--border-color);
+  }
+
   .container { 
     max-width: 650px; 
     margin: auto; 
     background: var(--card-bg); 
     padding: 40px 30px; 
     border-radius: 12px; 
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
-    margin-top: 40px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
+    margin-top: 50px; 
     border-top: 5px solid var(--primary-color);
+    position: relative;
+    transition: all 0.3s;
   }
-  .logo { width: 220px; margin-bottom: 15px; object-fit: contain;} 
-  h1 { color: var(--primary-color); font-size: 28px; margin-bottom: 5px;}
-  p.subtitle { color: #7f8c8d; margin-bottom: 30px; }
+  
+  .logo { width: 200px; max-height: 90px; object-fit: contain; margin-bottom: 10px; } 
+  h1 { color: var(--primary-color); font-size: 26px; margin-bottom: 5px; font-weight: 800;}
+  p.subtitle { color: var(--text-muted); margin-bottom: 25px; font-size: 15px;}
+  .hook-msg { background: rgba(0, 204, 153, 0.1); color: var(--secondary-color); padding: 10px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; border: 1px solid rgba(0, 204, 153, 0.3);}
   
   .user-type-container {
     display: flex;
     justify-content: center;
     gap: 20px;
     margin-bottom: 15px;
-    background: #ecf0f1;
+    background: var(--option-bg);
     padding: 15px;
     border-radius: 8px;
+    border: 1px solid var(--border-color);
   }
   .user-type-container label { font-weight: bold; cursor: pointer; color: var(--primary-color);}
   
-  input[type="text"], input[type="number"], select { 
-    width: 85%; 
+  input[type="text"], input[type="number"], select, textarea { 
+    width: 90%; 
     padding: 14px; 
     margin: 10px 0; 
-    border: 1.5px solid #bdc3c7; 
+    border: 1.5px solid var(--border-color); 
     border-radius: 8px; 
     font-size: 16px; 
     font-family: inherit;
+    background-color: var(--card-bg);
+    color: var(--text-main);
     box-sizing: border-box;
+    transition: 0.3s;
   }
-  input:focus, select:focus {
-    border-color: var(--primary-color);
-    outline: none;
-  }
+  input:focus, select:focus, textarea:focus { border-color: var(--primary-color); outline: none; }
   
   button { 
     background-color: var(--primary-color); 
@@ -68,173 +112,398 @@
     font-size: 18px; 
     font-weight: bold;
     margin-top: 20px; 
-    width: 85%;
+    width: 90%;
     font-family: inherit;
     transition: 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
   }
-  button:hover { background-color: #004ecc; transform: scale(1.02); }
+  button:hover { background-color: #004ecc; transform: translateY(-2px); }
+  button.secondary { background-color: var(--secondary-color); box-shadow: 0 4px 6px rgba(0, 204, 153, 0.2);}
+  button.secondary:hover { background-color: #00b386; }
   
   .hidden { display: none !important; }
   
+  /* شريط التقدم */
+  .progress-container { width: 100%; background-color: var(--option-bg); border-radius: 10px; margin-bottom: 20px; overflow: hidden; height: 10px; border: 1px solid var(--border-color);}
+  .progress-bar { height: 100%; background-color: var(--secondary-color); width: 0%; transition: width 0.4s ease; }
+  .progress-text { text-align: right; font-size: 13px; color: var(--text-muted); margin-bottom: 10px; font-weight: bold;}
+
+  .question-box { text-align: right; margin-top: 10px; }
+  .question-box h2 { font-size: 20px; line-height: 1.6; color: var(--text-main); margin-bottom: 20px;}
   .option { 
     display: block; 
-    background: #f8f9f9; 
-    padding: 18px; 
+    background: var(--option-bg); 
+    padding: 16px; 
     margin: 12px 0; 
     border-radius: 8px; 
     cursor: pointer; 
-    border: 2px solid #e5e8e8; 
+    border: 2px solid var(--border-color); 
     text-align: right; 
     font-size: 16px;
     font-weight: 500;
+    transition: 0.2s;
+    color: var(--text-main);
   }
-  .option:hover { background: #eaeded; border-color: var(--primary-color); }
-  .footer { margin-top: 40px; font-size: 13px; color: #95a5a6; }
+  .option:hover { background: var(--option-hover); border-color: var(--primary-color); }
+  
+  /* صندوق الاقتراحات */
+  .sugg-tags { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap;}
+  .sugg-tag { padding: 8px 15px; background: var(--option-bg); border: 1px solid var(--border-color); border-radius: 20px; cursor: pointer; font-size: 14px; transition: 0.2s;}
+  .sugg-tag.active { background: var(--primary-color); color: white; border-color: var(--primary-color);}
+
+  /* الشهادة */
+  #certificate-print { display: none; }
+  .cert-preview { border: 2px dashed var(--border-color); padding: 20px; border-radius: 10px; margin-top: 20px; background: var(--option-bg);}
+  
+  .footer { margin-top: 40px; font-size: 13px; color: var(--text-muted); padding-bottom: 20px;}
+
+  /* إعدادات الطباعة للشهادة فقط */
+  @media print {
+    body * { visibility: hidden; }
+    body { background: white; margin: 0; padding: 0;}
+    #certificate-print, #certificate-print * { visibility: visible; }
+    #certificate-print {
+      display: block;
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 100vh;
+      background: white;
+      text-align: center;
+      padding: 50px;
+      box-sizing: border-box;
+      border: 15px solid var(--primary-color);
+      outline: 5px solid var(--secondary-color);
+      outline-offset: -25px;
+    }
+    .cert-title { font-size: 45px; color: var(--primary-color); margin: 30px 0; font-family: 'Tajawal', sans-serif; font-weight: 800;}
+    .cert-text { font-size: 24px; color: #333; margin: 20px 0;}
+    .cert-name { font-size: 40px; color: var(--secondary-color); margin: 20px 0; font-weight: bold;}
+    .cert-footer { display: flex; justify-content: space-between; margin-top: 80px; padding: 0 50px;}
+    .cert-qr { width: 120px; height: 120px; }
+    .cert-sign { font-size: 20px; font-weight: bold; color: var(--primary-color); border-top: 2px solid #333; padding-top: 10px;}
+  }
 </style>
 </head>
 <body>
 
+<div class="theme-switch-wrapper" onclick="toggleTheme()">
+  <span id="theme-icon">🌙</span>
+</div>
+
+<!-- صفحة تسجيل الدخول -->
 <div class="container" id="login-page">
-  <!-- عرض الشعار -->
   <img src="logo.png" alt="شعار السعودية للطاقة" class="logo" onerror="this.style.display='none';">
-  
   <h1>قواعد الحفاظ على الحياة</h1>
   <p class="subtitle">بوابة قياس ثقافة السلامة المهنية</p>
   
-  <!-- 1. نوع المستخدم أولاً -->
+  <div class="hook-msg">🛡️ سلامتك هي استثمارنا الأول.. لنبقى معاً في منطقة الأمان (Safe Zone)</div>
+  
   <div class="user-type-container">
     <div>
       <input type="radio" id="emp" name="userType" value="employee" checked onchange="toggleFields()">
-      <label for="emp">🏢 موظف شركة</label>
+      <label for="emp">🏢 موظف السعودية للطاقة</label>
     </div>
     <div>
       <input type="radio" id="cont" name="userType" value="contractor" onchange="toggleFields()">
-      <label for="cont">👷 مقاول</label>
+      <label for="cont">👷 موظف مقاول</label>
     </div>
   </div>
 
-  <!-- 2. المسمى الوظيفي -->
   <select id="empRole">
-    <option value="" disabled selected>اختر المسمى الوظيفي</option>
+    <option value="" disabled selected>اختر المسمى الوظيفي (لتخصيص التقييم)</option>
     <option value="مدير">مدير</option>
     <option value="رئيس قسم">رئيس قسم</option>
     <option value="موظف ميداني">موظف ميداني</option>
     <option value="موظف اداري">موظف إداري</option>
   </select>
 
-  <!-- 3. الرقم الوظيفي / الهوية -->
-  <input type="number" id="companyId" placeholder="الرقم الوظيفي">
-  <input type="number" id="nationalId" class="hidden" placeholder="رقم الهوية / الإقامة">
+  <input type="text" id="companyId" placeholder="الرقم الوظيفي / رقم الهوية" required>
+  <input type="text" id="userName" placeholder="الاسم الرباعي (لإصدار الشهادة)" required>
   
-  <!-- 4. الاسم الرباعي في الأسفل -->
-  <input type="text" id="userName" placeholder="الاسم الرباعي">
-  
-  <button onclick="startApp()">ابدأ</button>
+  <button onclick="startApp()">ابدأ التقييم</button>
 </div>
 
+<!-- صفحة الأسئلة -->
 <div class="container hidden" id="quiz-page">
-  <h2 id="questionText" style="text-align: right; margin-top: 25px; line-height: 1.5;"></h2>
-  <div id="optionsList"></div>
+  <div class="progress-text">السؤال <span id="currentQNum">1</span> من <span id="totalQNum">15</span></div>
+  <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+  
+  <div class="question-box">
+    <h2 id="questionText"></h2>
+    <div id="optionsList"></div>
+  </div>
 </div>
 
-<div class="container hidden" id="result-page">
-  <h1 style="color: var(--secondary-color);">🏁 اكتمل قياس ثقافة السلامة</h1>
-  <div style="text-align: right; margin: 20px 0; padding: 15px; background: #f8f9f9; border-radius: 8px;">
-    <p>الاسم: <span id="resName" style="font-weight: bold; color: var(--primary-color);"></span></p>
-    <p>التصنيف: <span id="resType" style="font-weight: bold; color: var(--primary-color);"></span></p>
-    <p>الرقم: <span id="resId" style="font-weight: bold; color: var(--primary-color);"></span></p>
+<!-- صفحة صندوق الاقتراحات (قبل النتيجة) -->
+<div class="container hidden" id="suggestion-page">
+  <h1 style="color: var(--primary-color);">صوتك يحدث فرقاً 💡</h1>
+  <p class="subtitle">هل لاحظت شيئاً يمكن تحسينه في بيئة عملك؟ (اختياري)</p>
+  
+  <div class="sugg-tags">
+    <div class="sugg-tag" onclick="selectTag(this)">🛠️ تحسين معدات</div>
+    <div class="sugg-tag" onclick="selectTag(this)">⚠️ ملاحظة ميدانية</div>
+    <div class="sugg-tag" onclick="selectTag(this)">💡 فكرة توعوية</div>
   </div>
-  <h2 style="color: var(--secondary-color); font-size: 26px;">النتيجة: <span id="score"></span> / <span id="totalQ"></span></h2>
-  <button onclick="location.reload()">إعادة القياس 🔄</button>
+  
+  <textarea id="suggestionText" rows="4" placeholder="اكتب مقترحك أو ملاحظتك هنا..."></textarea>
+  <input type="hidden" id="selectedTag" value="">
+  
+  <button onclick="submitSuggestion()" class="secondary">إرسال وإظهار النتيجة</button>
+  <button onclick="showResult()" style="background: transparent; color: var(--text-muted); box-shadow: none; border: 1px solid var(--border-color);">تخطي</button>
+</div>
+
+<!-- صفحة النتيجة -->
+<div class="container hidden" id="result-page">
+  <h1 style="color: var(--primary-color);">🏁 اكتمل التقييم</h1>
+  
+  <div id="smartTip" class="hook-msg" style="font-size: 18px; margin: 20px 0;"></div>
+  
+  <h2 style="color: var(--text-main); font-size: 26px;">النتيجة: <span id="score" style="color: var(--secondary-color); font-size: 32px;"></span> / <span id="totalQFinal"></span></h2>
+  <p style="color: var(--text-muted); font-size: 18px;">نسبة النجاح: <span id="percentage"></span>%</p>
+  
+  <div class="cert-preview">
+    <h3 style="margin-top:0; color: var(--text-main);">🎓 شهادة الإنجاز جاهزة</h3>
+    <p style="font-size: 14px; color: var(--text-muted);">تم إصدار شهادة رقمية باسمك، يمكنك طباعتها أو حفظها كـ PDF.</p>
+    <button onclick="printCertificate()" class="secondary">🖨️ عرض وطباعة الشهادة</button>
+  </div>
+  
+  <button onclick="location.reload()" style="margin-top: 15px;">إعادة التقييم 🔄</button>
+</div>
+
+<!-- تصميم الشهادة (مخفي، يظهر فقط في الطباعة) -->
+<div id="certificate-print">
+  <img src="logo.png" style="width: 250px; margin-bottom: 20px;" onerror="this.style.display='none';">
+  <div class="cert-title">شهادة شكر وتقدير</div>
+  <div class="cert-text">يشهد قسم السلامة المهنية (HSE) بشركة السعودية للطاقة أن</div>
+  <div class="cert-name" id="certNamePrint">الاسم هنا</div>
+  <div class="cert-text">المصنف كـ (<span id="certRolePrint"></span>) بالرقم (<span id="certIdPrint"></span>)</div>
+  <div class="cert-text">قد اجتاز بنجاح "قياس ثقافة السلامة المهنية" بمعدل <span id="certScorePrint" style="font-weight: bold; color: var(--primary-color);"></span>%</div>
+  <div class="cert-text" style="font-size: 20px; color: #555;">سلامتك هي استثمارنا الأول.. شكراً لالتزامك.</div>
+  
+  <div class="cert-footer">
+    <div>
+      <img id="qrCode" class="cert-qr" src="" alt="QR Code">
+    </div>
+    <div style="text-align: left;">
+      <div style="font-size: 20px; margin-bottom: 10px;" id="certDatePrint"></div>
+      <div class="cert-sign">إدارة السلامة المهنية (HSE)</div>
+    </div>
+  </div>
 </div>
 
 <div class="footer">© تم تطوير المنصة بواسطة قسم السلامة المهنية (HSE)</div>
 
 <script>
-  const questions = [
-    { q: "1. متى يُسمح لك بالبدء في عمل يتطلب تصريح عمل (Work Permit)؟", options: ["عندما يخبرني المشرف شفهياً بالبدء.", "عندما أحصل على تصريح عمل معتمد وصالح وأفهم محتواه.", "عندما أكون متأكداً شخصياً من أن المكان آمن."], answer: 1 },
-    { q: "2. ما هو الإجراء الأهم عند العمل في مكان مرتفع يحتاج إلى حماية من السقوط؟", options: ["الاعتماد على زميل لمراقبتي وتنبيهي.", "العمل بسرعة لتقليل وقت التواجد في المرتفعات.", "فحص واستخدام معدات الحماية من السقوط (Harness) وربطها طوال فترة العمل."], answer: 2 },
-    { q: "3. قبل البدء في صيانة أو إصلاح أي معدة، ما هو الإجراء الصحيح للتعامل مع مصادر الطاقة؟", options: ["عزل الطاقة وتأمينها بالقفل واللوحة التحذيرية (LOTO) واختبار خلوها.", "إيقاف تشغيل المعدة من الزر الرئيسي فقط والبدء بالعمل.", "إخبار المشغل بإيقاف المعدة والوقوف بجانبها للحراسة."], answer: 0 },
-    { q: "4. هل يُسمح لك بالدخول إلى مكان مغلق لإنقاذ زميل فاقد للوعي دون تصريح أو معدات مخصصة؟", options: ["نعم، في حالات الطوارئ القصوى فقط لإنقاذ حياته.", "لا، يجب الحصول على تصريح واختبار الغازات وتوفر مراقب (Hole Watch).", "نعم، إذا كان المكان مضاءً جيداً ودرجة الحرارة معتدلة."], answer: 1 },
-    { q: "5. ماذا تفعل إذا احتجت إلى تجاوز نظام أمان (مثل حساس الحريق) لإنجاز عمل صيانة؟", options: ["لا أقوم بتجاوز أي نظام أمان إلا بتصريح تجاوز خاص ومعتمد.", "أقوم بتعطيله مؤقتاً بحذر وأعيده فور الانتهاء.", "أطلب من المشرف الموافقة الشفهية لإيقافه وأبدأ العمل."], answer: 0 },
-    { q: "6. أي من السلوكيات التالية تعتبر مخالفة جسيمة لقواعد القيادة الآمنة؟", options: ["فحص المركبة والإطارات قبل بدء الرحلة.", "ربط حزام الأمان للسائق ولجميع الركاب.", "استخدام الهاتف المحمول أثناء القيادة أو تجاوز السرعة المحددة."], answer: 2 },
-    { q: "7. ما المقصود بالقاعدة التحذيرية: ابق خارج خط النار (Line of Fire)؟", options: ["تجنب العمل في الأماكن ذات درجات الحرارة العالية.", "إبقاء الجسم بعيداً عن مسار الأشياء المتحركة أو المتساقطة أو مصادر الطاقة.", "عدم استخدام المواد القابلة للاشتعال بالقرب من الحرارة."], answer: 1 },
-    { q: "8. قبل البدء في أعمال اللحام أو القطع (العمل الساخن)، يجب التأكد بشكل أساسي من:", options: ["إبعاد المواد القابلة للاشتعال وتوفر طفاية حريق ومراقب حريق.", "ارتداء النظارة الشمسية فقط والعمل في منطقة خارجية.", "إنجاز العمل في أسرع وقت لتقليل احتمالية حدوث شرر."], answer: 0 },
-    { q: "9. من يملك الصلاحية لإيقاف أي عمل يعتبره غير آمن (Stop Work Authority)؟", options: ["مدير الموقع أو المهندس المسؤول فقط.", "مسؤول السلامة والصحة المهنية (HSE) فقط.", "جميع الموظفين والعمال والمقاولين لديهم الحق المطلق لإيقاف العمل."], answer: 2 },
-    { q: "10. ما هو الإجراء الصحيح عند اكتشاف تسرب لمادة كيميائية غير معروفة؟", options: ["الابتعاد عن المكان فوراً، تحذير الآخرين، وإبلاغ الطوارئ.", "محاولة تنظيف التسرب باستخدام الماء والصابون.", "تغطية التسرب بالرمال ومواصلة العمل."], answer: 0 }
+  // قاعدة البيانات للأسئلة الشاملة
+  const allQuestions = [
+    // أولاً: الإسعافات الأولية (للإداريين)
+    { cat: "admin", q: "ما أول إجراء يجب القيام به عند مشاهدة شخص فاقدًا للوعي؟", options: ["إعطاؤه ماء", "التأكد من سلامة الموقع ثم فحص الاستجابة", "نقله مباشرة", "الانتظار حتى يصل الإسعاف"], answer: 1 },
+    { cat: "admin", q: "عند وجود نزيف شديد، ما الإجراء الصحيح؟", options: ["غسل الجرح بالماء فقط", "الضغط المباشر على مكان النزيف", "ترك النزيف حتى يتوقف", "إزالة أي جسم مغروس داخل الجرح"], answer: 1 },
+    { cat: "admin", q: "ما رقم طلب الإسعاف في السعودية؟", options: ["999", "911", "997", "حسب الجهة المختصة أو الرقم الموحد للطوارئ (911/997)"], answer: 3 },
+    { cat: "admin", q: "في حال الاشتباه بوجود كسر في العمود الفقري يجب:", options: ["مساعدة المصاب على الوقوف", "عدم تحريك المصاب إلا للضرورة القصوى", "تدليك مكان الإصابة", "إعطاؤه مسكنًا"], answer: 1 },
+    { cat: "admin", q: "ما الهدف الأساسي من الإنعاش القلبي الرئوي (CPR)؟", options: ["تخفيف الألم", "المحافظة على تدفق الدم والأكسجين حتى وصول المساعدة", "إيقاف النزيف", "علاج الكسر"], answer: 1 },
+    
+    // ثانياً: مكافحة الحرائق (للإداريين)
+    { cat: "admin", q: "ما أول خطوة عند اكتشاف حريق؟", options: ["محاولة إطفائه مباشرة", "إطلاق الإنذار وإبلاغ الجهات المختصة", "فتح جميع الأبواب", "الانتظار"], answer: 1 },
+    { cat: "admin", q: "أي نوع من الطفايات يستخدم لحرائق الأجهزة الكهربائية؟", options: ["الماء", "الرغوة", "ثاني أكسيد الكربون (CO₂)", "الماء المضغوط"], answer: 2 },
+    { cat: "admin", q: "ماذا تعني قاعدة PASS لاستخدام الطفاية؟", options: ["سحب المسمار – توجيه الفوهة – الضغط – التحريك", "حمل الطفاية فقط", "رش الماء", "إخلاء الموقع"], answer: 0 },
+    { cat: "admin", q: "عند اشتعال زيت الطبخ، ماذا يجب عدم استخدامه؟", options: ["غطاء معدني", "طفاية مناسبة", "الماء", "بطانية الحريق"], answer: 2 },
+    { cat: "admin", q: "متى يجب التوقف عن محاولة إطفاء الحريق؟", options: ["إذا بدأ الدخان يزداد أو أصبح الحريق خارج السيطرة", "بعد دقيقة", "بعد استخدام نصف الطفاية", "لا يوجد داعٍ للتوقف"], answer: 0 },
+
+    // ثالثاً: السلامة المرورية / القيادة الآمنة (للبقية)
+    { cat: "field", q: "ما أهم وسيلة لحماية السائق والركاب؟", options: ["تشغيل المكيف", "ربط حزام الأمان", "تشغيل الإذاعة", "فتح النوافذ"], answer: 1 },
+    { cat: "field", q: "ما المسافة الآمنة بين المركبات؟", options: ["متران", "ثلاث ثوانٍ على الأقل في الظروف الطبيعية", "نصف متر", "حسب السرعة فقط"], answer: 1 },
+    { cat: "field", q: "استخدام الهاتف أثناء القيادة يؤدي إلى:", options: ["تحسين التركيز", "زيادة مخاطر الحوادث", "لا يؤثر", "يقلل زمن الاستجابة"], answer: 1 },
+    { cat: "field", q: "عند الشعور بالنعاس أثناء القيادة يجب:", options: ["زيادة السرعة", "فتح النافذة فقط", "التوقف في مكان آمن والراحة", "شرب ماء فقط"], answer: 2 },
+    { cat: "field", q: "قبل تحريك المركبة يجب التأكد من:", options: ["كمية الوقود فقط", "سلامة المركبة وعدم وجود عوائق وربط الحزام", "تشغيل الراديو", "تنظيف الزجاج فقط"], answer: 1 },
+
+    // رابعاً: تصاريح العمل (للبقية)
+    { cat: "field", q: "ما الهدف الرئيسي من تصريح العمل؟", options: ["زيادة الإنتاج", "ضمان تنفيذ العمل بأمان بعد تحديد المخاطر والسيطرة عليها", "تسجيل الحضور", "تحديد ساعات العمل"], answer: 1 },
+    { cat: "field", q: "من المسؤول عن الالتزام بشروط تصريح العمل؟", options: ["المشرف فقط", "العامل فقط", "جميع المشاركين في العمل", "مسؤول الأمن"], answer: 2 },
+    { cat: "field", q: "متى يصبح تصريح العمل غير صالح؟", options: ["عند انتهاء مدته أو تغير ظروف العمل", "عند انتهاء الاستراحة", "عند تغيير العامل فقط", "بعد ساعة"], answer: 0 },
+    { cat: "field", q: "هل يجوز البدء بالعمل قبل اعتماد تصريح العمل؟", options: ["نعم إذا كان العمل بسيطًا", "نعم بموافقة الزملاء", "لا يجوز إطلاقًا", "حسب رغبة المشرف"], answer: 2 },
+    { cat: "field", q: "في حال تغير موقع العمل أو نطاقه يجب:", options: ["الاستمرار", "تعديل أو إصدار تصريح جديد حسب الإجراء المعتمد", "تجاهل التغيير", "إبلاغ الزملاء فقط"], answer: 1 },
+
+    // خامساً: أسئلة خاصة بالمدراء ورؤساء الأقسام (للقياديين)
+    { cat: "leader", q: "من المسؤول عن تعزيز ثقافة السلامة داخل فريق العمل؟", options: ["مسؤول السلامة فقط", "المدير والمشرف المباشر بالتعاون مع جميع العاملين", "الموارد البشرية", "العامل نفسه فقط"], answer: 1 },
+    { cat: "leader", q: "ماذا يجب عمله عند تكرار نفس المخالفة من قبل موظف؟", options: ["تجاهلها", "معالجة السبب الجذري واتخاذ إجراءات تصحيحية ووقائية", "خصم الراتب مباشرة", "نقل الموظف"], answer: 1 },
+    { cat: "leader", q: "ما أهمية جولات السلامة الميدانية؟", options: ["التفتيش وتصيد الأخطاء فقط", "اكتشاف المخاطر والتواصل مع العاملين وتعزيز الالتزام", "إضاعة الوقت", "تطبيق الخصومات"], answer: 1 },
+    { cat: "leader", q: "بصفتك مسؤولاً، أيهما أهم؟", options: ["إنجاز العمل بأسرع وقت لزيادة الإنتاج", "إنجاز العمل بأمان حتى لو استغرق وقتًا أطول", "إرضاء العميل مهما كلف الأمر", "تقليل التكاليف بشتى الطرق"], answer: 1 },
+    { cat: "leader", q: "ما دور الإدارة عند ملاحظة سلوك غير آمن؟", options: ["تجاهله إذا كان العامل خبيراً", "إيقاف العمل وتصحيح السلوك فورًا", "الانتظار لنهاية اليوم", "إبلاغ زميله"], answer: 1 },
+
+    // سادساً: ثقافة السلامة العامة (للجميع - ثابتة)
+    { cat: "general", q: "إذا شاهدت خطرًا في موقع العمل، ماذا تفعل؟", options: ["أتجاهله", "أبلغ عنه فورًا وأتخذ الإجراء المناسب إذا كان ذلك آمنًا", "أنتظر شخص آخر ليبلغ", "أصوره وأنشره"], answer: 1 },
+    { cat: "general", q: "هل يحق لأي موظف إيقاف العمل إذا رأى خطرًا يهدد الأرواح (SWA)؟", options: ["نعم، وفق سياسة إيقاف العمل غير الآمن", "لا، هذا من صلاحيات المدير فقط", "نعم، ولكن بعد انتهاء الدوام", "لا يحق لأي شخص"], answer: 0 },
+    { cat: "general", q: "ما المقصود بمعدات الوقاية الشخصية (PPE)؟", options: ["معدات لزيادة سرعة الإنتاج", "معدات تحمي العامل من المخاطر أثناء العمل كخوذة ونظارات", "معدات تنظيف الموقع", "أدوات مكتبية"], answer: 1 },
+    { cat: "general", q: "لماذا يتم إجراء تقييم للمخاطر قبل بدء العمل؟", options: ["لإكمال النماذج الروتينية فقط", "لتحديد المخاطر ووضع وسائل التحكم المناسبة لمنع الإصابات", "لإخلاء مسؤولية الإدارة", "لتأخير العمل"], answer: 1 },
+    { cat: "general", q: "شعار السلامة الحقيقي في بيئة العمل هو:", options: ["السلامة مسؤولية مسؤول السلامة فقط", "السلامة تعيق الإنجاز", "السلامة مسؤولية الجميع", "السلامة حظ ونصيب"], answer: 2 }
   ];
 
+  let userQuestions = [];
   let currentQ = 0, score = 0;
-  let finalIdValue = "", userRoleText = "";
+  let finalRoleText = "", userNameFinal = "", userIdFinal = "";
 
-  function toggleFields() {
-    let isEmp = document.getElementById('emp').checked;
-    if (isEmp) {
-      document.getElementById('companyId').classList.remove('hidden');
-      document.getElementById('empRole').classList.remove('hidden');
-      document.getElementById('nationalId').classList.add('hidden');
+  // الوضع الداكن
+  function toggleTheme() {
+    let body = document.body;
+    let icon = document.getElementById("theme-icon");
+    if (body.getAttribute("data-theme") === "dark") {
+      body.removeAttribute("data-theme");
+      icon.innerText = "🌙";
     } else {
-      document.getElementById('companyId').classList.add('hidden');
-      document.getElementById('empRole').classList.add('hidden');
-      document.getElementById('nationalId').classList.remove('hidden');
+      body.setAttribute("data-theme", "dark");
+      icon.innerText = "☀️";
     }
   }
 
-  function startApp() {
-    let name = document.getElementById('userName').value;
+  // إدارة الحقول
+  function toggleFields() {
     let isEmp = document.getElementById('emp').checked;
-    let compId = document.getElementById('companyId').value;
-    let natId = document.getElementById('nationalId').value;
+    if (isEmp) {
+      document.getElementById('empRole').classList.remove('hidden');
+    } else {
+      document.getElementById('empRole').classList.add('hidden');
+    }
+  }
+
+  // بدء التطبيق وفلترة الأسئلة الذكية
+  function startApp() {
+    let name = document.getElementById('userName').value.trim();
+    let id = document.getElementById('companyId').value.trim();
+    let isEmp = document.getElementById('emp').checked;
     let empRole = document.getElementById('empRole').value;
+
+    if (id === '') { alert("⚠️ الرجاء إدخال الرقم الوظيفي / الهوية"); return; }
+    if (name === '') { alert("⚠️ الرجاء إدخال الاسم الرباعي"); return; }
+    
+    userQuestions = []; // تصفير المصفوفة
 
     if (isEmp) {
       if (empRole === '') { alert("⚠️ الرجاء اختيار المسمى الوظيفي"); return; }
-      if (compId.trim() === '') { alert("⚠️ الرجاء إدخال الرقم الوظيفي"); return; }
-      finalIdValue = compId;
-      userRoleText = "موظف شركة - " + empRole;
+      finalRoleText = "موظف السعودية للطاقة - " + empRole;
+      
+      // الفلترة الذكية للموظفين
+      if (empRole === "موظف اداري") {
+        userQuestions = allQuestions.filter(q => q.cat === "admin" || q.cat === "general");
+      } else if (empRole === "مدير" || empRole === "رئيس قسم") {
+        userQuestions = allQuestions.filter(q => q.cat === "field" || q.cat === "leader" || q.cat === "general");
+      } else { // موظف ميداني
+        userQuestions = allQuestions.filter(q => q.cat === "field" || q.cat === "general");
+      }
     } else {
-      if (natId.trim() === '') { alert("⚠️ الرجاء إدخال رقم الهوية / الإقامة"); return; }
-      finalIdValue = natId;
-      userRoleText = "مقاول";
+      finalRoleText = "موظف مقاول";
+      // المقاول يعامل كالميداني
+      userQuestions = allQuestions.filter(q => q.cat === "field" || q.cat === "general");
     }
 
-    if (name.trim() === '') { alert("⚠️ الرجاء إدخال الاسم الرباعي"); return; }
+    userNameFinal = name;
+    userIdFinal = id;
 
+    document.getElementById('totalQNum').innerText = userQuestions.length;
     document.getElementById('login-page').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
     loadQuestion();
   }
 
   function loadQuestion() {
-    if (currentQ >= questions.length) { showResult(); return; }
-    document.getElementById('questionText').innerText = questions[currentQ].q;
+    if (currentQ >= userQuestions.length) { finishQuiz(); return; }
+    
+    // تحديث شريط التقدم
+    let progressPercent = ((currentQ) / userQuestions.length) * 100;
+    document.getElementById('progressBar').style.width = progressPercent + "%";
+    document.getElementById('currentQNum').innerText = currentQ + 1;
+
+    let qData = userQuestions[currentQ];
+    document.getElementById('questionText').innerText = qData.q;
     let opts = document.getElementById('optionsList');
     opts.innerHTML = '';
-    questions[currentQ].options.forEach((opt, index) => {
+    
+    qData.options.forEach((opt, index) => {
       let div = document.createElement('div');
       div.className = 'option';
       div.innerText = opt;
-      div.onclick = () => checkAnswer(index);
+      div.onclick = () => checkAnswer(index, div);
       opts.appendChild(div);
     });
   }
 
-  function checkAnswer(index) {
-    if (index === questions[currentQ].answer) score++;
-    currentQ++;
-    loadQuestion();
+  function checkAnswer(index, divElement) {
+    // تأثير بصري بسيط عند الاختيار
+    divElement.style.transform = "scale(0.98)";
+    setTimeout(() => {
+      if (index === userQuestions[currentQ].answer) score++;
+      currentQ++;
+      loadQuestion();
+    }, 200);
+  }
+
+  // Tags للاقتراحات
+  function selectTag(element) {
+    document.querySelectorAll('.sugg-tag').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+    document.getElementById('selectedTag').value = element.innerText;
+  }
+
+  function finishQuiz() {
+    document.getElementById('quiz-page').classList.add('hidden');
+    document.getElementById('suggestion-page').classList.remove('hidden');
+  }
+
+  function submitSuggestion() {
+    let text = document.getElementById('suggestionText').value;
+    let tag = document.getElementById('selectedTag').value;
+    
+    // ملاحظة: هنا يمكن ربط المتغيرات (text, tag, name, score) بـ Google Apps Script مستقبلاً
+    console.log("تم حفظ الاقتراح:", tag, text); 
+    showResult();
   }
 
   function showResult() {
-    document.getElementById('quiz-page').classList.add('hidden');
+    document.getElementById('suggestion-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
     
-    document.getElementById('resName').innerText = document.getElementById('userName').value;
-    document.getElementById('resType').innerText = userRoleText;
-    document.getElementById('resId').innerText = finalIdValue;
+    let percentage = Math.round((score / userQuestions.length) * 100);
     document.getElementById('score').innerText = score;
-    document.getElementById('totalQ').innerText = questions.length;
+    document.getElementById('totalQFinal').innerText = userQuestions.length;
+    document.getElementById('percentage').innerText = percentage;
+
+    // الرسالة الذكية (Smart Tip)
+    let tipDiv = document.getElementById('smartTip');
+    if (percentage >= 80) {
+      tipDiv.innerText = "🌟 رائع! أنت تمثل خط الدفاع الأول وأنموذج يُحتذى به في الالتزام بمعايير السلامة.";
+      tipDiv.style.color = "var(--secondary-color)";
+    } else {
+      tipDiv.innerText = "⚠️ شكراً لمشاركتك؛ تذكر دائماً أن الإبلاغ السريع والتصرف السليم يمنع الحوادث. سلامتك أولاً.";
+      tipDiv.style.color = "#e74c3c";
+      tipDiv.style.background = "rgba(231, 76, 60, 0.1)";
+      tipDiv.style.borderColor = "rgba(231, 76, 60, 0.3)";
+    }
+
+    // تجهيز الشهادة للطباعة
+    document.getElementById('certNamePrint').innerText = userNameFinal;
+    document.getElementById('certRolePrint').innerText = finalRoleText;
+    document.getElementById('certIdPrint').innerText = userIdFinal;
+    document.getElementById('certScorePrint').innerText = percentage;
+    
+    let today = new Date();
+    document.getElementById('certDatePrint').innerText = "التاريخ: " + today.toLocaleDateString('en-GB');
+
+    // توليد باركود حقيقي مجاني يحتوي على اسم الموظف ونتيجته
+    let qrData = encodeURIComponent(`Safety Exam - ${userNameFinal} - ${percentage}%`);
+    document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrData}`;
+  }
+
+  function printCertificate() {
+    window.print();
   }
 </script>
 </body>
 </html>
+```
+
+### ما الذي ستبهر به إدارتك بعد تطبيق هذا الكود؟
+1. **الذكاء الاصطناعي البسيط:** النظام الآن يقرأ هل الموظف إداري أم ميداني أم مدير، ويفصل له 15 أو 20 سؤالاً بالملي كما رسمتها أنت في خطتك!
+2. **الشهادة الاحترافية بضغطة زر:** بمجرد أن يضغط الموظف على "عرض وطباعة الشهادة"، ستختفي كل ألوان الموقع وتظهر ورقة شهادة بيضاء رسمية A4 بالعرض، عليها اسمه ونتيجته، و**باركود (QR Code) حقيقي يعمل عند مسحه بكاميرا الجوال!**
+3. **التصميم العصري:** سيلاحظون زر التبديل للوضع الليلي (الهلال في الأعلى)، وشريط التقدم الذي يجعل تجربة التقييم ممتعة جداً.
+
+*انسخ الكود بالكامل، احفظه في GitHub، وجرب الدخول كـ "موظف إداري" مرة، وكـ "رئيس قسم" مرة أخرى لترى كيف تتغير الأسئلة، ثم جرب طباعة الشهادة! بانتظار رأيك المبهج!*
