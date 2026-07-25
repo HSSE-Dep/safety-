@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>قياس ثقافة السلامة - السعودية للطاقة</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --primary-color: #0066ff; 
@@ -16,7 +15,7 @@
   }
   
   body { 
-    font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     background-color: var(--bg-color); 
     color: var(--text-main);
     margin: 0; 
@@ -112,36 +111,53 @@
   .msg-success { background: rgba(0, 204, 153, 0.1); color: #009973; border-color: rgba(0, 204, 153, 0.3); }
   .msg-warn { background: rgba(231, 76, 60, 0.1); color: #c0392b; border-color: rgba(231, 76, 60, 0.3); }
   
-  /* الشهادة للطباعة فقط */
+  /* إعدادات الشهادة للطباعة الاحترافية */
   #certificate-print { display: none; }
   @media print {
+    @page { size: A4 portrait; margin: 0; }
     body * { visibility: hidden; }
     body { background: white; margin: 0; padding: 0; }
+    
     #certificate-print, #certificate-print * { visibility: visible; }
+    
     #certificate-print {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       position: absolute;
-      left: 0; top: 0;
-      width: 100%; height: 95vh;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh; /* ضبط الارتفاع ليكون بحجم الورقة بالضبط */
       background: white;
       text-align: center;
-      padding: 40px;
+      padding: 50px 40px; /* مساحة داخلية لمنع تداخل النصوص مع الإطار */
       box-sizing: border-box;
       border: 15px solid var(--primary-color);
       outline: 5px solid var(--secondary-color);
-      outline-offset: -25px;
+      outline-offset: -30px;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
-    .cert-logo { width: 250px; margin-bottom: 30px; }
-    .cert-title { font-size: 45px; color: var(--primary-color); margin-bottom: 20px; font-weight: 800; font-family: 'Tajawal', sans-serif;}
-    .cert-text { font-size: 24px; color: #333; margin: 15px 0;}
+    
+    .cert-logo { width: 220px; margin-top: 30px; margin-bottom: 20px; }
+    .cert-title { font-size: 45px; color: var(--primary-color); margin-bottom: 20px; font-weight: 800; }
+    .cert-text { font-size: 24px; color: #333; margin: 12px 0;}
     .cert-name { font-size: 40px; color: var(--secondary-color); margin: 20px 0; font-weight: bold;}
     .cert-score { font-size: 35px; color: var(--primary-color); font-weight: bold; margin: 20px 0;}
-    .cert-footer { display: flex; justify-content: space-between; width: 80%; margin-top: 60px; align-items: flex-end;}
+    
+    /* تثبيت الفوتر في الأسفل لمنع القص */
+    .cert-footer { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: flex-end;
+      width: 100%; 
+      padding: 0 50px;
+      box-sizing: border-box;
+      margin-top: auto; /* هذا السطر هو السحر الذي يدفع الفوتر لأسفل الإطار تماماً */
+      margin-bottom: 40px; /* إبعاده عن الإطار السفلي */
+    }
     .cert-qr { width: 130px; height: 130px; }
-    .cert-sign-area { text-align: left;}
+    .cert-sign-area { text-align: left; }
     .cert-sign { font-size: 22px; font-weight: bold; color: var(--primary-color); border-top: 2px solid #333; padding-top: 10px;}
   }
 </style>
@@ -238,7 +254,7 @@
   const adminQuestions = [
     { q: "1. ما أول إجراء يجب القيام به عند مشاهدة شخص فاقدًا للوعي؟", options: ["إعطاؤه ماء", "التأكد من سلامة الموقع ثم فحص الاستجابة", "نقله مباشرة", "الانتظار حتى يصل الإسعاف"], answer: 1 },
     { q: "2. عند وجود نزيف شديد، ما الإجراء الصحيح؟", options: ["غسل الجرح بالماء فقط", "الضغط المباشر على مكان النزيف", "ترك النزيف حتى يتوقف", "إزالة أي جسم مغروس داخل الجرح"], answer: 1 },
-    { q: "3. ما رقم طلب الإسعاف في السعودية؟", options: ["999", "911", "997", "حسب الجهة المختصة أو الرقم الموحد للطوارئ (911/997)"], answer: 3 },
+    { q: "3. ما رقم طلب الإسعاف في السعودية؟", options: ["999", "911", "997", "حسب الجهة المختصة أو الرقم الموحد للطوارئ"], answer: 3 },
     { q: "4. في حال الاشتباه بوجود كسر في العمود الفقري يجب:", options: ["مساعدة المصاب على الوقوف", "عدم تحريك المصاب إلا للضرورة القصوى", "تدليك مكان الإصابة", "إعطاؤه مسكنًا"], answer: 1 },
     { q: "5. ما الهدف الأساسي من الإنعاش القلبي الرئوي (CPR)؟", options: ["تخفيف الألم", "المحافظة على تدفق الدم والأكسجين حتى وصول المساعدة", "إيقاف النزيف", "علاج الكسر"], answer: 1 },
     { q: "6. ما أول خطوة عند اكتشاف حريق؟", options: ["محاولة إطفائه مباشرة", "إطلاق الإنذار وإبلاغ الجهات المختصة", "فتح جميع الأبواب", "الانتظار"], answer: 1 },
@@ -287,7 +303,7 @@
     } else {
       if (!natId) return alert("⚠️ الرجاء إدخال رقم الهوية / الإقامة");
       finalRole = "مقاول";
-      questions = fieldQuestions; // المقاول يأخذ أسئلة الميداني
+      questions = fieldQuestions;
     }
 
     if (!name) return alert("⚠️ الرجاء إدخال الاسم الرباعي");
@@ -328,7 +344,6 @@
     
     let percentage = Math.round((score / questions.length) * 100);
     
-    // تحديث بيانات الشاشة
     document.getElementById('resName').innerText = finalName;
     document.getElementById('resPercentage').innerText = percentage + "%";
     
@@ -341,21 +356,18 @@
       msgBox.className = "msg-box msg-warn";
     }
 
-    // تجهيز بيانات الشهادة (للطباعة)
+    // تجهيز الشهادة للطباعة
     document.getElementById('certPrintName').innerText = finalName;
     document.getElementById('certPrintRole').innerText = finalRole;
     document.getElementById('certPrintScore').innerText = percentage + "%";
     
     let today = new Date();
-    document.getElementById('certPrintDate').innerText = "التاريخ: " + today.toLocaleDateString('en-GB');
+    let dateString = today.toLocaleDateString('en-GB');
+    document.getElementById('certPrintDate').innerText = "التاريخ: " + dateString;
 
-    // توليد باركود الشهادة
-    let qrData = encodeURIComponent(`Safety Cert | ${finalName} | Score: ${percentage}%`);
+    let qrData = encodeURIComponent(`Safety Cert | ${finalName} | Score: ${percentage}% | Date: ${dateString}`);
     document.getElementById('certQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrData}`;
   }
 </script>
 </body>
 </html>
-```
-
-بمجرد أن تجيب على الأسئلة وتصل للصفحة النهائية، اضغط على زر **"طباعة الشهادة"** وشاهد السحر في تنسيق ورقة الـ A4 المجهزة للطباعة أو الحفظ كملف PDF! أي خدمة إضافية أنا حاضر وبكل احترافية.
