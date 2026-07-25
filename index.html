@@ -201,16 +201,16 @@
   <div class="user-type-container">
     <div>
       <input type="radio" id="emp" name="userType" value="employee" checked onchange="toggleFields()">
-      <label for="emp">🏢 موظف السعودية للطاقة</label>
+      <label for="emp">🏢 موظف شركة</label>
     </div>
     <div>
       <input type="radio" id="cont" name="userType" value="contractor" onchange="toggleFields()">
-      <label for="cont">👷 موظف مقاول</label>
+      <label for="cont">👷 مقاول</label>
     </div>
   </div>
 
   <select id="empRole">
-    <option value="" disabled selected>اختر المسمى الوظيفي (لتخصيص التقييم)</option>
+    <option value="" disabled selected>اختر المسمى الوظيفي</option>
     <option value="مدير">مدير</option>
     <option value="رئيس قسم">رئيس قسم</option>
     <option value="موظف ميداني">موظف ميداني</option>
@@ -225,7 +225,7 @@
 
 <!-- صفحة الأسئلة -->
 <div class="container hidden" id="quiz-page">
-  <div class="progress-text">السؤال <span id="currentQNum">1</span> من <span id="totalQNum">15</span></div>
+  <div class="progress-text">السؤال <span id="currentQNum">1</span> من <span id="totalQNum">10</span></div>
   <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
   
   <div class="question-box">
@@ -258,7 +258,7 @@
   
   <div id="smartTip" class="hook-msg" style="font-size: 18px; margin: 20px 0;"></div>
   
-  <h2 style="color: var(--text-main); font-size: 26px;">النتيجة: <span id="score" style="color: var(--secondary-color); font-size: 32px;"></span> / <span id="totalQFinal"></span></h2>
+  <h2 style="color: var(--text-main); font-size: 26px;">النتيجة: <span id="score" style="color: var(--secondary-color); font-size: 32px;"></span> / <span id="totalQFinal">10</span></h2>
   <p style="color: var(--text-muted); font-size: 18px;">نسبة النجاح: <span id="percentage"></span>%</p>
   
   <div class="cert-preview">
@@ -294,56 +294,38 @@
 <div class="footer">© تم تطوير المنصة بواسطة قسم السلامة المهنية (HSE)</div>
 
 <script>
-  // قاعدة البيانات للأسئلة الشاملة
-  const allQuestions = [
-    // أولاً: الإسعافات الأولية (للإداريين)
-    { cat: "admin", q: "ما أول إجراء يجب القيام به عند مشاهدة شخص فاقدًا للوعي؟", options: ["إعطاؤه ماء", "التأكد من سلامة الموقع ثم فحص الاستجابة", "نقله مباشرة", "الانتظار حتى يصل الإسعاف"], answer: 1 },
-    { cat: "admin", q: "عند وجود نزيف شديد، ما الإجراء الصحيح؟", options: ["غسل الجرح بالماء فقط", "الضغط المباشر على مكان النزيف", "ترك النزيف حتى يتوقف", "إزالة أي جسم مغروس داخل الجرح"], answer: 1 },
-    { cat: "admin", q: "ما رقم طلب الإسعاف في السعودية؟", options: ["999", "911", "997", "حسب الجهة المختصة أو الرقم الموحد للطوارئ (911/997)"], answer: 3 },
-    { cat: "admin", q: "في حال الاشتباه بوجود كسر في العمود الفقري يجب:", options: ["مساعدة المصاب على الوقوف", "عدم تحريك المصاب إلا للضرورة القصوى", "تدليك مكان الإصابة", "إعطاؤه مسكنًا"], answer: 1 },
-    { cat: "admin", q: "ما الهدف الأساسي من الإنعاش القلبي الرئوي (CPR)؟", options: ["تخفيف الألم", "المحافظة على تدفق الدم والأكسجين حتى وصول المساعدة", "إيقاف النزيف", "علاج الكسر"], answer: 1 },
-    
-    // ثانياً: مكافحة الحرائق (للإداريين)
-    { cat: "admin", q: "ما أول خطوة عند اكتشاف حريق؟", options: ["محاولة إطفائه مباشرة", "إطلاق الإنذار وإبلاغ الجهات المختصة", "فتح جميع الأبواب", "الانتظار"], answer: 1 },
-    { cat: "admin", q: "أي نوع من الطفايات يستخدم لحرائق الأجهزة الكهربائية؟", options: ["الماء", "الرغوة", "ثاني أكسيد الكربون (CO₂)", "الماء المضغوط"], answer: 2 },
-    { cat: "admin", q: "ماذا تعني قاعدة PASS لاستخدام الطفاية؟", options: ["سحب المسمار – توجيه الفوهة – الضغط – التحريك", "حمل الطفاية فقط", "رش الماء", "إخلاء الموقع"], answer: 0 },
-    { cat: "admin", q: "عند اشتعال زيت الطبخ، ماذا يجب عدم استخدامه؟", options: ["غطاء معدني", "طفاية مناسبة", "الماء", "بطانية الحريق"], answer: 2 },
-    { cat: "admin", q: "متى يجب التوقف عن محاولة إطفاء الحريق؟", options: ["إذا بدأ الدخان يزداد أو أصبح الحريق خارج السيطرة", "بعد دقيقة", "بعد استخدام نصف الطفاية", "لا يوجد داعٍ للتوقف"], answer: 0 },
-
-    // ثالثاً: السلامة المرورية / القيادة الآمنة (للبقية)
-    { cat: "field", q: "ما أهم وسيلة لحماية السائق والركاب؟", options: ["تشغيل المكيف", "ربط حزام الأمان", "تشغيل الإذاعة", "فتح النوافذ"], answer: 1 },
-    { cat: "field", q: "ما المسافة الآمنة بين المركبات؟", options: ["متران", "ثلاث ثوانٍ على الأقل في الظروف الطبيعية", "نصف متر", "حسب السرعة فقط"], answer: 1 },
-    { cat: "field", q: "استخدام الهاتف أثناء القيادة يؤدي إلى:", options: ["تحسين التركيز", "زيادة مخاطر الحوادث", "لا يؤثر", "يقلل زمن الاستجابة"], answer: 1 },
-    { cat: "field", q: "عند الشعور بالنعاس أثناء القيادة يجب:", options: ["زيادة السرعة", "فتح النافذة فقط", "التوقف في مكان آمن والراحة", "شرب ماء فقط"], answer: 2 },
-    { cat: "field", q: "قبل تحريك المركبة يجب التأكد من:", options: ["كمية الوقود فقط", "سلامة المركبة وعدم وجود عوائق وربط الحزام", "تشغيل الراديو", "تنظيف الزجاج فقط"], answer: 1 },
-
-    // رابعاً: تصاريح العمل (للبقية)
-    { cat: "field", q: "ما الهدف الرئيسي من تصريح العمل؟", options: ["زيادة الإنتاج", "ضمان تنفيذ العمل بأمان بعد تحديد المخاطر والسيطرة عليها", "تسجيل الحضور", "تحديد ساعات العمل"], answer: 1 },
-    { cat: "field", q: "من المسؤول عن الالتزام بشروط تصريح العمل؟", options: ["المشرف فقط", "العامل فقط", "جميع المشاركين في العمل", "مسؤول الأمن"], answer: 2 },
-    { cat: "field", q: "متى يصبح تصريح العمل غير صالح؟", options: ["عند انتهاء مدته أو تغير ظروف العمل", "عند انتهاء الاستراحة", "عند تغيير العامل فقط", "بعد ساعة"], answer: 0 },
-    { cat: "field", q: "هل يجوز البدء بالعمل قبل اعتماد تصريح العمل؟", options: ["نعم إذا كان العمل بسيطًا", "نعم بموافقة الزملاء", "لا يجوز إطلاقًا", "حسب رغبة المشرف"], answer: 2 },
-    { cat: "field", q: "في حال تغير موقع العمل أو نطاقه يجب:", options: ["الاستمرار", "تعديل أو إصدار تصريح جديد حسب الإجراء المعتمد", "تجاهل التغيير", "إبلاغ الزملاء فقط"], answer: 1 },
-
-    // خامساً: أسئلة خاصة بالمدراء ورؤساء الأقسام (للقياديين)
-    { cat: "leader", q: "من المسؤول عن تعزيز ثقافة السلامة داخل فريق العمل؟", options: ["مسؤول السلامة فقط", "المدير والمشرف المباشر بالتعاون مع جميع العاملين", "الموارد البشرية", "العامل نفسه فقط"], answer: 1 },
-    { cat: "leader", q: "ماذا يجب عمله عند تكرار نفس المخالفة من قبل موظف؟", options: ["تجاهلها", "معالجة السبب الجذري واتخاذ إجراءات تصحيحية ووقائية", "خصم الراتب مباشرة", "نقل الموظف"], answer: 1 },
-    { cat: "leader", q: "ما أهمية جولات السلامة الميدانية؟", options: ["التفتيش وتصيد الأخطاء فقط", "اكتشاف المخاطر والتواصل مع العاملين وتعزيز الالتزام", "إضاعة الوقت", "تطبيق الخصومات"], answer: 1 },
-    { cat: "leader", q: "بصفتك مسؤولاً، أيهما أهم؟", options: ["إنجاز العمل بأسرع وقت لزيادة الإنتاج", "إنجاز العمل بأمان حتى لو استغرق وقتًا أطول", "إرضاء العميل مهما كلف الأمر", "تقليل التكاليف بشتى الطرق"], answer: 1 },
-    { cat: "leader", q: "ما دور الإدارة عند ملاحظة سلوك غير آمن؟", options: ["تجاهله إذا كان العامل خبيراً", "إيقاف العمل وتصحيح السلوك فورًا", "الانتظار لنهاية اليوم", "إبلاغ زميله"], answer: 1 },
-
-    // سادساً: ثقافة السلامة العامة (للجميع - ثابتة)
-    { cat: "general", q: "إذا شاهدت خطرًا في موقع العمل، ماذا تفعل؟", options: ["أتجاهله", "أبلغ عنه فورًا وأتخذ الإجراء المناسب إذا كان ذلك آمنًا", "أنتظر شخص آخر ليبلغ", "أصوره وأنشره"], answer: 1 },
-    { cat: "general", q: "هل يحق لأي موظف إيقاف العمل إذا رأى خطرًا يهدد الأرواح (SWA)؟", options: ["نعم، وفق سياسة إيقاف العمل غير الآمن", "لا، هذا من صلاحيات المدير فقط", "نعم، ولكن بعد انتهاء الدوام", "لا يحق لأي شخص"], answer: 0 },
-    { cat: "general", q: "ما المقصود بمعدات الوقاية الشخصية (PPE)؟", options: ["معدات لزيادة سرعة الإنتاج", "معدات تحمي العامل من المخاطر أثناء العمل كخوذة ونظارات", "معدات تنظيف الموقع", "أدوات مكتبية"], answer: 1 },
-    { cat: "general", q: "لماذا يتم إجراء تقييم للمخاطر قبل بدء العمل؟", options: ["لإكمال النماذج الروتينية فقط", "لتحديد المخاطر ووضع وسائل التحكم المناسبة لمنع الإصابات", "لإخلاء مسؤولية الإدارة", "لتأخير العمل"], answer: 1 },
-    { cat: "general", q: "شعار السلامة الحقيقي في بيئة العمل هو:", options: ["السلامة مسؤولية مسؤول السلامة فقط", "السلامة تعيق الإنجاز", "السلامة مسؤولية الجميع", "السلامة حظ ونصيب"], answer: 2 }
+  // 10 أسئلة مخصصة للموظفين الإداريين فقط (الإسعافات + الحرائق)
+  const adminQuestions = [
+    { q: "1. ما أول إجراء يجب القيام به عند مشاهدة شخص فاقدًا للوعي؟", options: ["إعطاؤه ماء", "التأكد من سلامة الموقع ثم فحص الاستجابة", "نقله مباشرة", "الانتظار حتى يصل الإسعاف"], answer: 1 },
+    { q: "2. عند وجود نزيف شديد، ما الإجراء الصحيح؟", options: ["غسل الجرح بالماء فقط", "الضغط المباشر على مكان النزيف", "ترك النزيف حتى يتوقف", "إزالة أي جسم مغروس داخل الجرح"], answer: 1 },
+    { q: "3. ما رقم طلب الإسعاف في السعودية؟", options: ["999", "911", "997", "حسب الجهة المختصة أو الرقم الموحد للطوارئ (911/997)"], answer: 3 },
+    { q: "4. في حال الاشتباه بوجود كسر في العمود الفقري يجب:", options: ["مساعدة المصاب على الوقوف", "عدم تحريك المصاب إلا للضرورة القصوى", "تدليك مكان الإصابة", "إعطاؤه مسكنًا"], answer: 1 },
+    { q: "5. ما الهدف الأساسي من الإنعاش القلبي الرئوي (CPR)؟", options: ["تخفيف الألم", "المحافظة على تدفق الدم والأكسجين حتى وصول المساعدة", "إيقاف النزيف", "علاج الكسر"], answer: 1 },
+    { q: "6. ما أول خطوة عند اكتشاف حريق؟", options: ["محاولة إطفائه مباشرة", "إطلاق الإنذار وإبلاغ الجهات المختصة", "فتح جميع الأبواب", "الانتظار"], answer: 1 },
+    { q: "7. أي نوع من الطفايات يستخدم لحرائق الأجهزة الكهربائية؟", options: ["الماء", "الرغوة", "ثاني أكسيد الكربون (CO₂)", "الماء المضغوط"], answer: 2 },
+    { q: "8. ماذا تعني قاعدة PASS لاستخدام الطفاية؟", options: ["سحب المسمار – توجيه الفوهة – الضغط – التحريك", "حمل الطفاية فقط", "رش الماء", "إخلاء الموقع"], answer: 0 },
+    { q: "9. عند اشتعال زيت الطبخ، ماذا يجب عدم استخدامه؟", options: ["غطاء معدني", "طفاية مناسبة", "الماء", "بطانية الحريق"], answer: 2 },
+    { q: "10. متى يجب التوقف عن محاولة إطفاء الحريق؟", options: ["إذا بدأ الدخان يزداد أو أصبح الحريق خارج السيطرة", "بعد دقيقة", "بعد استخدام نصف الطفاية", "لا يوجد داعٍ للتوقف"], answer: 0 }
   ];
 
-  let userQuestions = [];
+  // 10 أسئلة مخصصة للمدراء، رؤساء الأقسام، الميدانيين، والمقاولين (قيادة + تصاريح + ثقافة)
+  const fieldQuestions = [
+    { q: "1. ما أهم وسيلة لحماية السائق والركاب؟", options: ["تشغيل المكيف", "ربط حزام الأمان", "تشغيل الإذاعة", "فتح النوافذ"], answer: 1 },
+    { q: "2. استخدام الهاتف أثناء القيادة يؤدي إلى:", options: ["تحسين التركيز", "زيادة مخاطر الحوادث", "لا يؤثر", "يقلل زمن الاستجابة"], answer: 1 },
+    { q: "3. قبل تحريك المركبة يجب التأكد من:", options: ["كمية الوقود فقط", "سلامة المركبة وعدم وجود عوائق وربط الحزام", "تشغيل الراديو", "تنظيف الزجاج فقط"], answer: 1 },
+    { q: "4. ما الهدف الرئيسي من تصريح العمل؟", options: ["زيادة الإنتاج", "ضمان تنفيذ العمل بأمان بعد تحديد المخاطر والسيطرة عليها", "تسجيل الحضور", "تحديد ساعات العمل"], answer: 1 },
+    { q: "5. متى يصبح تصريح العمل غير صالح؟", options: ["عند انتهاء مدته أو تغير ظروف العمل", "عند انتهاء الاستراحة", "عند تغيير العامل فقط", "بعد ساعة"], answer: 0 },
+    { q: "6. هل يجوز البدء بالعمل قبل اعتماد تصريح العمل؟", options: ["نعم إذا كان العمل بسيطًا", "نعم بموافقة الزملاء", "لا يجوز إطلاقًا", "حسب رغبة المشرف"], answer: 2 },
+    { q: "7. في حال تغير موقع العمل أو نطاقه يجب:", options: ["الاستمرار", "تعديل أو إصدار تصريح جديد حسب الإجراء المعتمد", "تجاهل التغيير", "إبلاغ الزملاء فقط"], answer: 1 },
+    { q: "8. بصفتك موظفاً في الموقع، أيهما أهم؟", options: ["إنجاز العمل بأسرع وقت لزيادة الإنتاج", "إنجاز العمل بأمان حتى لو استغرق وقتًا أطول", "إرضاء العميل مهما كلف الأمر", "تقليل التكاليف بشتى الطرق"], answer: 1 },
+    { q: "9. إذا شاهدت خطرًا في موقع العمل، ماذا تفعل؟", options: ["أتجاهله", "أبلغ عنه فورًا وأتخذ الإجراء المناسب إذا كان ذلك آمنًا", "أنتظر شخص آخر ليبلغ", "أصوره وأنشره"], answer: 1 },
+    { q: "10. هل يحق لأي موظف إيقاف العمل إذا رأى خطرًا يهدد الأرواح (SWA)؟", options: ["نعم، وفق سياسة إيقاف العمل غير الآمن", "لا، هذا من صلاحيات المدير فقط", "نعم، ولكن بعد انتهاء الدوام", "لا يحق لأي شخص"], answer: 0 }
+  ];
+
+  let currentQuestions = [];
   let currentQ = 0, score = 0;
   let finalRoleText = "", userNameFinal = "", userIdFinal = "";
 
-  // الوضع الداكن
   function toggleTheme() {
     let body = document.body;
     let icon = document.getElementById("theme-icon");
@@ -356,7 +338,6 @@
     }
   }
 
-  // إدارة الحقول
   function toggleFields() {
     let isEmp = document.getElementById('emp').checked;
     if (isEmp) {
@@ -366,7 +347,6 @@
     }
   }
 
-  // بدء التطبيق وفلترة الأسئلة الذكية
   function startApp() {
     let name = document.getElementById('userName').value.trim();
     let id = document.getElementById('companyId').value.trim();
@@ -376,44 +356,40 @@
     if (id === '') { alert("⚠️ الرجاء إدخال الرقم الوظيفي / الهوية"); return; }
     if (name === '') { alert("⚠️ الرجاء إدخال الاسم الرباعي"); return; }
     
-    userQuestions = []; // تصفير المصفوفة
-
+    // فلترة دقيقة حسب دور الموظف (10 أسئلة لكل شخص)
     if (isEmp) {
       if (empRole === '') { alert("⚠️ الرجاء اختيار المسمى الوظيفي"); return; }
-      finalRoleText = "موظف السعودية للطاقة - " + empRole;
+      finalRoleText = "موظف شركة - " + empRole;
       
-      // الفلترة الذكية للموظفين
       if (empRole === "موظف اداري") {
-        userQuestions = allQuestions.filter(q => q.cat === "admin" || q.cat === "general");
-      } else if (empRole === "مدير" || empRole === "رئيس قسم") {
-        userQuestions = allQuestions.filter(q => q.cat === "field" || q.cat === "leader" || q.cat === "general");
-      } else { // موظف ميداني
-        userQuestions = allQuestions.filter(q => q.cat === "field" || q.cat === "general");
+        currentQuestions = adminQuestions;
+      } else {
+        // المدراء ورؤساء الأقسام والميدانيون
+        currentQuestions = fieldQuestions;
       }
     } else {
-      finalRoleText = "موظف مقاول";
-      // المقاول يعامل كالميداني
-      userQuestions = allQuestions.filter(q => q.cat === "field" || q.cat === "general");
+      finalRoleText = "مقاول";
+      // المقاولون يعاملون كالميدانيين
+      currentQuestions = fieldQuestions;
     }
 
     userNameFinal = name;
     userIdFinal = id;
 
-    document.getElementById('totalQNum').innerText = userQuestions.length;
+    document.getElementById('totalQNum').innerText = currentQuestions.length;
     document.getElementById('login-page').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
     loadQuestion();
   }
 
   function loadQuestion() {
-    if (currentQ >= userQuestions.length) { finishQuiz(); return; }
+    if (currentQ >= currentQuestions.length) { finishQuiz(); return; }
     
-    // تحديث شريط التقدم
-    let progressPercent = ((currentQ) / userQuestions.length) * 100;
+    let progressPercent = ((currentQ) / currentQuestions.length) * 100;
     document.getElementById('progressBar').style.width = progressPercent + "%";
     document.getElementById('currentQNum').innerText = currentQ + 1;
 
-    let qData = userQuestions[currentQ];
+    let qData = currentQuestions[currentQ];
     document.getElementById('questionText').innerText = qData.q;
     let opts = document.getElementById('optionsList');
     opts.innerHTML = '';
@@ -428,16 +404,14 @@
   }
 
   function checkAnswer(index, divElement) {
-    // تأثير بصري بسيط عند الاختيار
     divElement.style.transform = "scale(0.98)";
     setTimeout(() => {
-      if (index === userQuestions[currentQ].answer) score++;
+      if (index === currentQuestions[currentQ].answer) score++;
       currentQ++;
       loadQuestion();
     }, 200);
   }
 
-  // Tags للاقتراحات
   function selectTag(element) {
     document.querySelectorAll('.sugg-tag').forEach(el => el.classList.remove('active'));
     element.classList.add('active');
@@ -450,11 +424,6 @@
   }
 
   function submitSuggestion() {
-    let text = document.getElementById('suggestionText').value;
-    let tag = document.getElementById('selectedTag').value;
-    
-    // ملاحظة: هنا يمكن ربط المتغيرات (text, tag, name, score) بـ Google Apps Script مستقبلاً
-    console.log("تم حفظ الاقتراح:", tag, text); 
     showResult();
   }
 
@@ -462,12 +431,10 @@
     document.getElementById('suggestion-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
     
-    let percentage = Math.round((score / userQuestions.length) * 100);
+    let percentage = Math.round((score / currentQuestions.length) * 100);
     document.getElementById('score').innerText = score;
-    document.getElementById('totalQFinal').innerText = userQuestions.length;
     document.getElementById('percentage').innerText = percentage;
 
-    // الرسالة الذكية (Smart Tip)
     let tipDiv = document.getElementById('smartTip');
     if (percentage >= 80) {
       tipDiv.innerText = "🌟 رائع! أنت تمثل خط الدفاع الأول وأنموذج يُحتذى به في الالتزام بمعايير السلامة.";
@@ -479,7 +446,6 @@
       tipDiv.style.borderColor = "rgba(231, 76, 60, 0.3)";
     }
 
-    // تجهيز الشهادة للطباعة
     document.getElementById('certNamePrint').innerText = userNameFinal;
     document.getElementById('certRolePrint').innerText = finalRoleText;
     document.getElementById('certIdPrint').innerText = userIdFinal;
@@ -488,7 +454,6 @@
     let today = new Date();
     document.getElementById('certDatePrint').innerText = "التاريخ: " + today.toLocaleDateString('en-GB');
 
-    // توليد باركود حقيقي مجاني يحتوي على اسم الموظف ونتيجته
     let qrData = encodeURIComponent(`Safety Exam - ${userNameFinal} - ${percentage}%`);
     document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrData}`;
   }
@@ -499,11 +464,3 @@
 </script>
 </body>
 </html>
-```
-
-### ما الذي ستبهر به إدارتك بعد تطبيق هذا الكود؟
-1. **الذكاء الاصطناعي البسيط:** النظام الآن يقرأ هل الموظف إداري أم ميداني أم مدير، ويفصل له 15 أو 20 سؤالاً بالملي كما رسمتها أنت في خطتك!
-2. **الشهادة الاحترافية بضغطة زر:** بمجرد أن يضغط الموظف على "عرض وطباعة الشهادة"، ستختفي كل ألوان الموقع وتظهر ورقة شهادة بيضاء رسمية A4 بالعرض، عليها اسمه ونتيجته، و**باركود (QR Code) حقيقي يعمل عند مسحه بكاميرا الجوال!**
-3. **التصميم العصري:** سيلاحظون زر التبديل للوضع الليلي (الهلال في الأعلى)، وشريط التقدم الذي يجعل تجربة التقييم ممتعة جداً.
-
-*انسخ الكود بالكامل، احفظه في GitHub، وجرب الدخول كـ "موظف إداري" مرة، وكـ "رئيس قسم" مرة أخرى لترى كيف تتغير الأسئلة، ثم جرب طباعة الشهادة! بانتظار رأيك المبهج!*
